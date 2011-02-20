@@ -190,7 +190,7 @@ bool SRUserInterface_Qt::viewReport()
 {
     deque<string> myValues = manager->makeReport();
 
-	QWidget *windowReport = new QWidget();
+	windowReport = new QWidget();
     QVBoxLayout *myLayout = new QVBoxLayout();
     QHBoxLayout* upperLayout = new QHBoxLayout();
     QTabWidget *myTab = new QTabWidget();
