@@ -1,5 +1,5 @@
 /**************************************************************************
-						SensorWithKnowDimensions.h
+	  SensorWithKnowDimensions.h
 **************************************************************************/
 
 
@@ -7,7 +7,12 @@
 #define SENSORWITHKNOWDIMENSIONS_H
 #include "FrameSensor.h"
 #include "Matrix.h"
-#include "AnalogFiductialMark.h"
+#include "DetectorFiducialMark.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 /**
   * class SensorWithKnowDimensions
@@ -29,7 +34,7 @@ private:
 	//Private attributes
 	//
 	double pixelSize;
-        int frameColumns; int frameRows;
+	int frameColumns; int frameRows;
 
 	//Composed objects
 	//
@@ -69,5 +74,10 @@ public:
 	//Other methods
 	//
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // SENSORWITHKNOWDIMENSIONS_H

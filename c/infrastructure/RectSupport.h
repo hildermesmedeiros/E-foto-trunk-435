@@ -3,41 +3,64 @@
 
 #include "EObject.h"
 
-/**
-* class RectSupport
-*
-* @author E-Foto group
-*
-* * * * * * * * * * * *
-* @date 06/05/2009
-* @version 1.2 - Rafael Alves de Aguiar & Irving da Silva Badolato.
-*/
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
+/**
+* \file RectSupport.h
+* \class RectSupport
+* \brief Estrutura básica de definição das dimensões para uma matriz.
+* \abstract Embora não possua métodos puramente virtuais a classe RectSupport é considerada pelos autores como uma classe abstrata, então você não deve usá-la diretamente.
+* \attention Contrua apenas objetos das classes derivadas.
+* \copyright E-Foto group
+* \authors Guilherme Abelha, Rafael Aguiar & Irving Badolato.
+*/
 class RectSupport : public EObject
 {
-    //EOBJECT
 
 protected:
-
-    unsigned int ncols;
-    unsigned int nrows;
+	unsigned int ncols;
+	unsigned int nrows;
 
 public:
 
-    //Constructors and Destructors
-    //
-    RectSupport(unsigned int parNcols, unsigned int parNrows);
-    virtual ~RectSupport();
+	/**
+ * \brief Construtor padrão.
+ * \param parNcols	Número de colunas.
+ * \param parNrows	Número de linhas.
+ */
+	RectSupport(unsigned int parNcols, unsigned int parNrows);
 
-    // EObject methods
-    //
-    string objectType(void);
+	/**
+ * \brief Destrutor virtual padrão.
+ */
+	virtual ~RectSupport();
 
-    // Other methods
-    //
-    unsigned int getCols() const;
-    unsigned int getRows() const;
+	/**
+ * \brief Método para emitir o nome de classe.
+ * \return string	Retorna o nome de classe do objeto.
+ */
+	string objectType(void);
+
+	/**
+ * \brief Método para retornar o número de colunas da matriz.
+ * \return unsigned	Número de colunas.
+ */
+	unsigned int getCols() const;
+
+	/**
+ * \brief Método para retornar o número de linhas da matriz.
+ * \return unsigned	Número de linhas.
+ */
+	unsigned int getRows() const;
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif //RECTSUPPORT_H

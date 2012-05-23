@@ -12,10 +12,16 @@
 
 // This class contains code of Matthias Pospiech to reimplement some of the validation methods.
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
+static bool isIntermediateValueHelper(qint64 num, qint64 minimum, qint64 maximum, qint64 *match = 0);
 
 class ScienceSpinBox : public QDoubleSpinBox
 {
-Q_OBJECT
+	Q_OBJECT
 public:
 	ScienceSpinBox(QWidget * parent = 0);
 
@@ -36,10 +42,9 @@ public:
 
 private:
 	int dispDecimals;
-        QTimer adjustDelayer; QTimer aux;
-        QChar delimiter; QChar thousand;
+	QTimer adjustDelayer; QTimer aux;
+	QChar delimiter; QChar thousand;
 	QDoubleValidator * v;
-        static bool isIntermediateValueHelper(qint64 num, qint64 minimum, qint64 maximum, qint64 *match = 0);
 
 
 private:
@@ -70,5 +75,10 @@ private slots:
 	void adjustDisplay();
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif //SCIENCESPINBOX

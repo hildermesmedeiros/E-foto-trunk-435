@@ -1,6 +1,11 @@
 #include "EfotoDoubleSpinBox.h"
 #include <QDebug>
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 EfotoDoubleSpinBox::EfotoDoubleSpinBox(QWidget *parent):QDoubleSpinBox(parent)
 {
 	installEventFilter(this);
@@ -17,8 +22,9 @@ bool EfotoDoubleSpinBox::eventFilter(QObject *obj, QEvent *evt)
 		return true;
 	}else
 	{
-		QDoubleSpinBox::eventFilter(obj,evt);
+		return QDoubleSpinBox::eventFilter(obj,evt);
 	}
+
 
 
 }
@@ -39,15 +45,20 @@ void EfotoDoubleSpinBox::keyPressEvent(QKeyEvent *event)
 			QDoubleSpinBox::keyPressEvent(event);
 	}
 	else if(event->key()==Qt::Key_Comma)
+	{
+		if(locale().decimalPoint()=='.')
 		{
-			if(locale().decimalPoint()=='.')
-			{
-				keyPressEvent(new QKeyEvent(QEvent::KeyPress,Qt::Key_Period,event->modifiers(),"."));
-				//return;
-			}
-			else
-				QDoubleSpinBox::keyPressEvent(event);
+			keyPressEvent(new QKeyEvent(QEvent::KeyPress,Qt::Key_Period,event->modifiers(),"."));
+			//return;
 		}
+		else
+			QDoubleSpinBox::keyPressEvent(event);
+	}
 	else
 		QDoubleSpinBox::keyPressEvent(event);
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

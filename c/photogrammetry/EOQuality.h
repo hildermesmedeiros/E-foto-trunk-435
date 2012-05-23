@@ -1,5 +1,5 @@
 /************************************************************************
-                        EOQuality.h
+	  EOQuality.h
 **************************************************************************/
 
 #ifndef EOQUALITY_H
@@ -7,6 +7,11 @@
 
 #include "EObject.h"
 #include "Matrix.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 class ExteriorOrientation;
 class SpatialRessection;
@@ -24,46 +29,51 @@ class SpatialRessection;
 
 class EOQuality : public EObject
 {
-    //EOBJECT
+	//EOBJECT
 
 private:
 
 
-    // Private attributes
-    //
-    Matrix V;
-    double sigma0Squared;
-    Matrix SigmaXa;
-    Matrix SigmaLa;
+	// Private attributes
+	//
+	Matrix V;
+	double sigma0Squared;
+	Matrix SigmaXa;
+	Matrix SigmaLa;
 
 public:
 
-    // Constructors and Destructor
-    //
-    virtual ~EOQuality();
+	// Constructors and Destructor
+	//
+	virtual ~EOQuality();
 
-    // Private attribute accessors
-    //
-    Matrix getV();
-    double getsigma0Squared();
-    Matrix getSigmaXa();
-    Matrix getSigmaLa();
+	// Private attribute accessors
+	//
+	Matrix getV();
+	double getsigma0Squared();
+	Matrix getSigmaXa();
+	Matrix getSigmaLa();
 
-    // EObject methods
-    //
-    string objectType(void);
-    string objectAssociations(void);
-    bool is(string s);
+	// EObject methods
+	//
+	string objectType(void);
+	string objectAssociations(void);
+	bool is(string s);
 
-    // XML methods
-    //
-    void xmlSetData(string xml);
-    string xmlGetData();
+	// XML methods
+	//
+	void xmlSetData(string xml);
+	string xmlGetData();
 
-    // Other methods
-    //
-    void calculate(SpatialRessection* myEO);
+	// Other methods
+	//
+	void calculate(SpatialRessection* myEO);
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // EOQUALITY_H

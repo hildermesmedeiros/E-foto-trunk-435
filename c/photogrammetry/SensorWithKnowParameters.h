@@ -1,5 +1,5 @@
 /**************************************************************************
-						SensorWithKnowParameters.h
+	  SensorWithKnowParameters.h
 **************************************************************************/
 
 
@@ -7,7 +7,12 @@
 #define SENSORWITHKNOWPARAMETERS_H
 #include "FrameSensor.h"
 #include "Matrix.h"
-#include "AnalogFiductialMark.h"
+#include "DetectorFiducialMark.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 /**
   * class SensorWithKnowParameters
@@ -69,5 +74,10 @@ public:
 	//
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // SENSORWITHKNOWPARAMETERS_H

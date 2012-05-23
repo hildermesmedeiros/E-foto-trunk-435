@@ -1,8 +1,13 @@
 /*******************************************************************************
-								FrameSensor.cpp
+		FrameSensor.cpp
 *******************************************************************************/
 
 #include "FrameSensor.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 // Subclass methods
 //
@@ -70,7 +75,7 @@ void FrameSensor::setFocalDistanceSigma(double newFocalDistanceSigma)
 	focalDistanceSigma = newFocalDistanceSigma;
 }
 
-void FrameSensor::setPrincipalPointCoordinates(AnalogImageSpaceCoordinate newCoordinates)
+void FrameSensor::setPrincipalPointCoordinates(DetectorSpaceCoordinate newCoordinates)
 {
 	principalPointCoordinates = newCoordinates;
 }
@@ -85,7 +90,7 @@ double FrameSensor::getFocalDistanceSigma()
 	return focalDistanceSigma;
 }
 
-AnalogImageSpaceCoordinate FrameSensor::getPrincipalPointCoordinates()
+DetectorSpaceCoordinate FrameSensor::getPrincipalPointCoordinates()
 {
 	return principalPointCoordinates;
 }
@@ -110,3 +115,8 @@ string FrameSensor::objectType(void)
 {
 	return "FrameSensor";
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

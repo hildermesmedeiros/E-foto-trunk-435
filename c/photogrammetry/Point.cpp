@@ -1,9 +1,14 @@
 /*******************************************************************************
-                        Point.cpp
+	  Point.cpp
 *******************************************************************************/
 
 #include "Point.h"
 #include "Image.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 // Constructors
 
@@ -12,7 +17,7 @@
  */
 Point::Point()
 {
-    setId(0);
+	setId(0);
 }
 
 /**
@@ -20,7 +25,7 @@ Point::Point()
  */
 Point::Point(int myId)
 {
-    setId(myId);
+	setId(myId);
 }
 
 /**
@@ -39,7 +44,7 @@ Point::~Point()
  */
 void Point::setId(int newId)
 {
-    id = newId;
+	id = newId;
 }
 
 /**
@@ -57,7 +62,12 @@ void Point::setPointId(string newPointId)
  */
 void Point::setDescription(string newDescription)
 {
-    description = newDescription;
+	description = newDescription;
+}
+
+void Point::setType(PointType type)
+{
+	this->type = type;
 }
 
 /**
@@ -66,7 +76,7 @@ void Point::setDescription(string newDescription)
  */
 int Point::getId()
 {
-    return id;
+	return id;
 }
 
 /**
@@ -84,7 +94,12 @@ string Point::getPointId()
  */
 string Point::getDescription()
 {
-    return description;
+	return description;
+}
+
+Point::PointType Point::getType()
+{
+	return type;
 }
 
 // Composed Objects accessor methods
@@ -96,7 +111,7 @@ string Point::getDescription()
  */
 void Point::setObjectCoordinate(ObjectSpaceCoordinate newObjectCoordinate)
 {
-    objectCoordinate = newObjectCoordinate;
+	objectCoordinate = newObjectCoordinate;
 }
 
 /**
@@ -105,205 +120,205 @@ void Point::setObjectCoordinate(ObjectSpaceCoordinate newObjectCoordinate)
  */
 ObjectSpaceCoordinate Point::getObjectCoordinate()
 {
-    return objectCoordinate;
+	return objectCoordinate;
 }
 
 /**
- * Set all the values of digitalCoordinates deque at once
- * @param newDigitalCoordinates the new values
+ * Set all the values of imageCoordinates deque at once
+ * @param newimageCoordinates the new values
  */
-void Point::setDigitalCoordinates(deque<DigitalImageSpaceCoordinate> newDigitalCoordinates)
+void Point::setImageCoordinates(deque<ImageSpaceCoordinate> newimageCoordinates)
 {
-    digitalCoordinates = newDigitalCoordinates;
+	imageCoordinates = newimageCoordinates;
 }
 
 /**
- * Set all the values of analogCoordinates deque at once
- * @param newAnalogCoordinates the new values
+ * Set all the values of DetectorCoordinates deque at once
+ * @param newDetectorCoordinates the new values
  */
-void Point::setAnalogCoordinates(deque<AnalogImageSpaceCoordinate> newAnalogCoordinates)
+void Point::setDetectorCoordinates(deque<DetectorSpaceCoordinate> newDetectorCoordinates)
 {
-    analogCoordinates = newAnalogCoordinates;
+	detectorCoordinates = newDetectorCoordinates;
 }
 
 /**
- * Get the value of digitalCoordinates deque
- * @return the values of digitalCoordinates deque
+ * Get the value of imageCoordinates deque
+ * @return the values of imageCoordinates deque
  */
-deque<DigitalImageSpaceCoordinate> Point::getDigitalCoordinates()
+deque<ImageSpaceCoordinate> Point::getImageCoordinates()
 {
-    return digitalCoordinates;
+	return imageCoordinates;
 }
 
 /**
- * Get the value of analogCoordinates deque
- * @return the values of analogCoordinates deque
+ * Get the value of DetectorCoordinates deque
+ * @return the values of DetectorCoordinates deque
  */
-deque<AnalogImageSpaceCoordinate> Point::getAnalogCoordinates()
+deque<DetectorSpaceCoordinate> Point::getDetectorCoordinates()
 {
-    return analogCoordinates;
+	return detectorCoordinates;
 }
 
 
 /**
- * Put one value in digitalCoordinates deque
- * @param newDigitalSpace the new value in digitalCoordinates
+ * Put one value in imageCoordinates deque
+ * @param newimageSpace the new value in imageCoordinates
  */
-int Point::putDigitalCoordinate(DigitalImageSpaceCoordinate newDigitalCoordinate)
+int Point::putImageCoordinate(ImageSpaceCoordinate newimageCoordinate)
 {
-    if (digitalCoordinates.empty())
-    {
-        digitalCoordinates.push_back(newDigitalCoordinate);
-    }
-    else
-    {
-        if (digitalCoordinates.back().getImageId() < newDigitalCoordinate.getImageId())
-        {
-            digitalCoordinates.push_back(newDigitalCoordinate);
-        }
-        else
-        {
-            for (unsigned int i = 0; i < digitalCoordinates.size(); i++)
-            {
-                if (digitalCoordinates.at(i).getImageId() > newDigitalCoordinate.getImageId())
-                {
-                    digitalCoordinates.insert(digitalCoordinates.begin()+i,newDigitalCoordinate);
-                    break;
-                }
-                else if (digitalCoordinates.at(i).getImageId() == newDigitalCoordinate.getImageId())
-                {
-                    digitalCoordinates.erase(digitalCoordinates.begin()+i);
-                    digitalCoordinates.insert(digitalCoordinates.begin()+i,newDigitalCoordinate);
-                    return 1;
-                }
-            }
-        }
-    }
-    return 0;
+	if (imageCoordinates.empty())
+	{
+		imageCoordinates.push_back(newimageCoordinate);
+	}
+	else
+	{
+		if (imageCoordinates.back().getImageId() < newimageCoordinate.getImageId())
+		{
+			imageCoordinates.push_back(newimageCoordinate);
+		}
+		else
+		{
+			for (unsigned int i = 0; i < imageCoordinates.size(); i++)
+			{
+				if (imageCoordinates.at(i).getImageId() > newimageCoordinate.getImageId())
+				{
+					imageCoordinates.insert(imageCoordinates.begin()+i,newimageCoordinate);
+					break;
+				}
+				else if (imageCoordinates.at(i).getImageId() == newimageCoordinate.getImageId())
+				{
+					imageCoordinates.erase(imageCoordinates.begin()+i);
+					imageCoordinates.insert(imageCoordinates.begin()+i,newimageCoordinate);
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
 }
 
 /**
- * Put one value in analogCoordinates deque
- * @param newAnalogSpace the new value in analogCoordinates
+ * Put one value in DetectorCoordinates deque
+ * @param newDetectorSpace the new value in DetectorCoordinates
  */
-int Point::putAnalogCoordinate(AnalogImageSpaceCoordinate newAnalogCoordinate)
+int Point::putDetectorCoordinate(DetectorSpaceCoordinate newDetectorCoordinate)
 {
 
-    int imageId = newAnalogCoordinate.getImageId();
-    if (hasAnalogCoordinate(imageId))
-        return 1;
-    analogCoordinates.push_back(newAnalogCoordinate);
-    return 0;
+	int imageId = newDetectorCoordinate.getImageId();
+	if (hasDetectorCoordinate(imageId))
+		return 1;
+	detectorCoordinates.push_back(newDetectorCoordinate);
+	return 0;
 }
 
 /**
- * Get the value of the digitalCoordinate with a specific imageId
+ * Get the value of the imageCoordinate with a specific imageId
  * @param imageId the specified imageId
- * @return the value of digitalCoordinate
+ * @return the value of imageCoordinate
  */
-DigitalImageSpaceCoordinate Point::getDigitalCoordinate(int imageId)
+ImageSpaceCoordinate Point::getImageCoordinate(int imageId)
 {
 
-    for (unsigned int i = 0; i < digitalCoordinates.size(); i++)
-        if (digitalCoordinates.at(i).getImageId() == imageId)
-            return digitalCoordinates.at(i);
-    return DigitalImageSpaceCoordinate();
+	for (unsigned int i = 0; i < imageCoordinates.size(); i++)
+		if (imageCoordinates.at(i).getImageId() == imageId)
+			return imageCoordinates.at(i);
+	return ImageSpaceCoordinate();
 }
 
 /**
- * Get the value of analogCoordinates with a specific imageId
+ * Get the value of DetectorCoordinates with a specific imageId
  * @param imageId the specified imageId
- * @return the value of analogCoordinates
+ * @return the value of DetectorCoordinates
  */
-AnalogImageSpaceCoordinate Point::getAnalogCoordinate(int imageId)
+DetectorSpaceCoordinate Point::getDetectorCoordinate(int imageId)
 {
 
-    for (unsigned int i = 0; i < analogCoordinates.size(); i++)
-        if (analogCoordinates.at(i).getImageId() == imageId)
-            return analogCoordinates.at(i);
-    return AnalogImageSpaceCoordinate();
+	for (unsigned int i = 0; i < detectorCoordinates.size(); i++)
+		if (detectorCoordinates.at(i).getImageId() == imageId)
+			return detectorCoordinates.at(i);
+	return DetectorSpaceCoordinate();
 }
 
 /**
  *
  */
-DigitalImageSpaceCoordinate Point::getDigitalCoordinateAt(unsigned int index)
+ImageSpaceCoordinate Point::getImageCoordinateAt(unsigned int index)
 {
-    if (index < digitalCoordinates.size())
-        return digitalCoordinates.at(index);
-    return DigitalImageSpaceCoordinate();
+	if (index < imageCoordinates.size())
+		return imageCoordinates.at(index);
+	return ImageSpaceCoordinate();
 }
 
 /**
  *
  */
-AnalogImageSpaceCoordinate Point::getAnalogCoordinateAt(unsigned int index)
+DetectorSpaceCoordinate Point::getDetectorCoordinateAt(unsigned int index)
 {
-    if (index < analogCoordinates.size())
-        return analogCoordinates.at(index);
-    return AnalogImageSpaceCoordinate();
+	if (index < detectorCoordinates.size())
+		return detectorCoordinates.at(index);
+	return DetectorSpaceCoordinate();
 }
 
 /**
  *
  */
-unsigned int Point::countDigitalCoordinates()
+unsigned int Point::countImageCoordinates()
 {
-    return digitalCoordinates.size();
+	return imageCoordinates.size();
 }
 
 /**
  *
  */
-unsigned int Point::countAnalogCoordinates()
+unsigned int Point::countDetectorCoordinates()
 {
-    return analogCoordinates.size();
+	return detectorCoordinates.size();
 }
 
 /**
- * Clear all the values of digitalCoordinates deque
+ * Clear all the values of imageCoordinates deque
  */
-void Point::clearDigitalCoordinates()
+void Point::clearImageCoordinates()
 {
-    digitalCoordinates.clear();
+	imageCoordinates.clear();
 }
 
 /**
- * Clear all the values of analogCoordinates deque
+ * Clear all the values of DetectorCoordinates deque
  */
-void Point::clearAnalogCoordinates()
+void Point::clearDetectorCoordinates()
 {
-    analogCoordinates.clear();
+	detectorCoordinates.clear();
 }
 
 /**
- * Delete the value of digitalCoordinate with a specific imageId
+ * Delete the value of imageCoordinate with a specific imageId
  * @param imageId the specified imageId
  */
-void Point::deleteDigitalCoordinate(int imageId)
+void Point::deleteImageCoordinate(int imageId)
 {
 
-    for (unsigned int i = 0; i < digitalCoordinates.size(); i++)
-        if (digitalCoordinates.at(i).getImageId() == imageId)
-        {
-        digitalCoordinates.erase(digitalCoordinates.begin()+i);
-        break;
-    }
+	for (unsigned int i = 0; i < imageCoordinates.size(); i++)
+		if (imageCoordinates.at(i).getImageId() == imageId)
+		{
+			imageCoordinates.erase(imageCoordinates.begin()+i);
+			break;
+		}
 }
 
 /**
- * Delete the value of analogCoordinate with a specific imageId
+ * Delete the value of DetectorCoordinate with a specific imageId
  * @param imageId the specified imageId
  */
-void Point::deleteAnalogCoordinate(int imageId)
+void Point::deleteDetectorCoordinate(int imageId)
 {
 
-    for (unsigned int i = 0; i < analogCoordinates.size(); i++)
-        if (analogCoordinates.at(i).getImageId() == imageId)
-        {
-        analogCoordinates.erase(analogCoordinates.begin()+i);
-        break;
-    }
+	for (unsigned int i = 0; i < detectorCoordinates.size(); i++)
+		if (detectorCoordinates.at(i).getImageId() == imageId)
+		{
+			detectorCoordinates.erase(detectorCoordinates.begin()+i);
+			break;
+		}
 }
 
 
@@ -316,14 +331,14 @@ void Point::deleteAnalogCoordinate(int imageId)
  */
 void Point::putImage(Image* newImageAssociation)
 {
-    bool insert = true;
-    // Eliminamos primeiro a possibilidade duplicar uma associação.
-    for (unsigned int i = 0; i < myImages.size(); i++)
-        if (myImages.at(i) == newImageAssociation)
-            insert = false;
-    // Fazemos a nova associação.
-    if (insert)
-        myImages.push_back(newImageAssociation);
+	bool insert = true;
+	// Eliminamos primeiro a possibilidade duplicar uma associação.
+	for (unsigned int i = 0; i < myImages.size(); i++)
+		if (myImages.at(i) == newImageAssociation)
+			insert = false;
+	// Fazemos a nova associação.
+	if (insert)
+		myImages.push_back(newImageAssociation);
 }
 
 /**
@@ -331,10 +346,10 @@ void Point::putImage(Image* newImageAssociation)
  */
 Image* Point::getImage(int imageId)
 {
-    for (unsigned int i = 0; i < myImages.size(); i++)
-        if (myImages.at(i)->getId() == imageId)
-            return myImages.at(i);
-    return NULL;
+	for (unsigned int i = 0; i < myImages.size(); i++)
+		if (myImages.at(i)->getId() == imageId)
+			return myImages.at(i);
+	return NULL;
 }
 
 /**
@@ -342,7 +357,7 @@ Image* Point::getImage(int imageId)
  */
 int Point::countImages()
 {
-    return myImages.size();
+	return myImages.size();
 }
 
 /**
@@ -350,9 +365,9 @@ int Point::countImages()
  */
 Image* Point::getImageAt(unsigned int index)
 {
-    if (index < myImages.size())
-        return myImages.at(index);
-    return NULL;
+	if (index < myImages.size())
+		return myImages.at(index);
+	return NULL;
 }
 
 
@@ -361,29 +376,29 @@ Image* Point::getImageAt(unsigned int index)
 //
 
 /**
- * Check if digitalCoordinates has a member with a specific imageId
+ * Check if imageCoordinates has a member with a specific imageId
  * @param imageId the specified imageId
  */
-bool Point::hasDigitalCoordinate(int imageId)
+bool Point::hasImageCoordinate(int imageId)
 {
 
-    for (unsigned int i = 0; i < digitalCoordinates.size(); i++)
-        if (digitalCoordinates.at(i).getImageId() == imageId)
-            return true;
-    return false;
+	for (unsigned int i = 0; i < imageCoordinates.size(); i++)
+		if (imageCoordinates.at(i).getImageId() == imageId)
+			return true;
+	return false;
 }
 
 /**
- * Check if analogCoordinates has a member with a specific imageId
+ * Check if DetectorCoordinates has a member with a specific imageId
  * @param imageId the specified imageId
  */
-bool Point::hasAnalogCoordinate(int imageId)
+bool Point::hasDetectorCoordinate(int imageId)
 {
 
-    for (unsigned int i = 0; i < analogCoordinates.size(); i++)
-        if (analogCoordinates.at(i).getImageId() == imageId)
-            return true;
-    return false;
+	for (unsigned int i = 0; i < detectorCoordinates.size(); i++)
+		if (detectorCoordinates.at(i).getImageId() == imageId)
+			return true;
+	return false;
 
 }
 
@@ -395,9 +410,9 @@ bool Point::hasAnalogCoordinate(int imageId)
  */
 string Point::objectType(void)
 {
-    stringstream result;
-    result << "Point " << id;
-    return result.str();
+	stringstream result;
+	result << "Point " << id;
+	return result.str();
 }
 
 /**
@@ -405,12 +420,12 @@ string Point::objectType(void)
  */
 string Point::objectAssociations(void)
 {
-    stringstream result;
-    if (countImages() != 0)
-        result << "Image";
-    for (int i = 0; i < countImages(); i++)
-        result << " " << getImageAt(i)->getId();
-    return result.str();
+	stringstream result;
+	if (countImages() != 0)
+		result << "Image";
+	for (int i = 0; i < countImages(); i++)
+		result << " " << getImageAt(i)->getId();
+	return result.str();
 }
 
 /**
@@ -418,8 +433,85 @@ string Point::objectAssociations(void)
  */
 bool Point::is(string s)
 {
-    return (s == "Point" ? true : false);
+	return (s == "Point" ? true : false);
 }
 
-// Other methods
-//
+void Point::xmlSetData(string xml)
+{
+	EDomElement root(xml);
+	id = Conversion::stringToInt(root.attribute("key"));
+	type = readPointType(root.attribute("type"));
+	pointId = root.elementByTagName("pointId").toString();
+	description = root.elementByTagName("description").toString();
+	objectCoordinate.xmlSetData(root.elementByTagName("spatialCoordinates").getContent());
+	deque<EDomElement> xmlimageCoordinates = root.elementsByTagName("imageCoordinates");
+	imageCoordinates.clear();
+	for (unsigned int i = 0; i < xmlimageCoordinates.size(); i++)
+	{
+		ImageSpaceCoordinate* disc = new ImageSpaceCoordinate;
+		disc->xmlSetData(xmlimageCoordinates.at(i).getContent());
+		imageCoordinates.push_back(*disc);
+	}
+}
+
+string Point::xmlGetData()
+{
+	stringstream result;
+	result << "<point key=\"" << Conversion::intToString(id) << "\" type=\"" << writePointType(type) << "\">\n";
+	result << "<pointId>" << pointId << "</pointId>\n";
+	result << "<description>" << description << "</description>\n";
+	result << objectCoordinate.xmlGetData();
+	result << "<imagesMeasurements>\n";
+	for (unsigned int i = 0; i < imageCoordinates.size(); i++)
+	{
+		result << imageCoordinates.at(i).xmlGetData();
+	}
+	result << "</imagesMeasurements>\n";
+	result << "</point>\n";
+	return result.str();
+}
+
+Point::PointType Point::readPointType(string type)
+{
+	if (type == "control")
+	{
+		return CONTROL;
+	}
+	else if (type == "checking")
+	{
+		return CHECKING;
+	}
+	else if (type == "photogrammetric")
+	{
+		return PHOTOGRAMMETRIC;
+	}
+	else
+	{
+		return UNKNOWN;
+	}
+}
+
+string Point::writePointType(PointType type)
+{
+	if (type == CONTROL)
+	{
+		return "control";
+	}
+	else if (type == CHECKING)
+	{
+		return "checking";
+	}
+	else if (type == PHOTOGRAMMETRIC)
+	{
+		return "photogrammetric";
+	}
+	else
+	{
+		return "unknown";
+	}
+}
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

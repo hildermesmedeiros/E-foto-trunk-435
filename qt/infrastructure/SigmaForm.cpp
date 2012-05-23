@@ -1,6 +1,11 @@
 #include "SigmaForm.h"
 #include "ScienceSpinBox.h"
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 SigmaFormController::SigmaFormController()
 {
 	init();
@@ -158,18 +163,18 @@ string SigmaFormController::getValues()
 		for (unsigned int i = 0; i < dimension; i++)
 		{
 			if (!edits.at(i)->text().isEmpty())
-                                result.set(1+i,1,Conversion::stringToDouble(edits.at(i)->textValue().toStdString()));
+				result.set(1+i,1,Conversion::stringToDouble(edits.at(i)->textValue().toStdString()));
 			else
 				result.set(1+i,1,0);
 		}
 		//if (!result.isZeroes())--> O metodo isZeroes() não é muito util para o caso de
 		//sigma, pois qualquer valor abaixo de 0.000001 é considerado zero
-			return  "<sigma>\n" + result.xmlGetData() + "</sigma>\n";
+		return  "<sigma>\n" + result.xmlGetData() + "</sigma>\n";
 		/*else
-		{
-			toMode("Not Available");
-			return "<sigma>Not Available</sigma>\n";
-		}*/
+  {
+   toMode("Not Available");
+   return "<sigma>Not Available</sigma>\n";
+  }*/
 	}
 	else if (mode == "Covariance Matrix")
 	{
@@ -472,3 +477,8 @@ void SigmaFormDialogButton::setSigmaFormController(SigmaFormController *newContr
 	connect(controller, SIGNAL(changeMatrixButtonVisibility(bool)), this, SLOT(setVisible(bool)));
 	connect(controller, SIGNAL(changeToReadOnly(bool)), this, SLOT(setDisabled(bool)));
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

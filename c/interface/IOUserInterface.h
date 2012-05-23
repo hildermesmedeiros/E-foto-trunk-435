@@ -1,5 +1,5 @@
 /**************************************************************************
-							 IOUserInterface.h
+		IOUserInterface.h
 **************************************************************************/
 
 
@@ -21,6 +21,11 @@
   * @version 1.0 - Rafael Alves de Aguiar & Irving da Silva Badolato
   *
   */
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 
 class IOUserInterface //: public EObject
 {
@@ -39,10 +44,15 @@ public:
 
 	// Other Methods
 	//
-	virtual bool measureMark(int id, int col, int lin) = 0;
+	virtual bool measureMark(int id, double col, double lin) = 0;
 	virtual bool calculateIO() = 0;
 	virtual bool exec() = 0;
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif //IOUSERINTERFACE_H

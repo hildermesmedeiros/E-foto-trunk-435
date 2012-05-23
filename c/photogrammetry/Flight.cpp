@@ -1,10 +1,15 @@
 /*******************************************************************************
-                              Flight.cpp
+		 Flight.cpp
 *******************************************************************************/
 
 #include "Flight.h"
 #include "Image.h"
 #include "SensorWithFiducialMarks.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 // Constructors and destructors
 //
@@ -22,8 +27,8 @@ Flight::Flight()
  */
 Flight::Flight(int myId, int mySensorId)
 {
-    id = myId;
-    sensorId = mySensorId;
+	id = myId;
+	sensorId = mySensorId;
 }
 
 /**
@@ -43,7 +48,7 @@ Flight::~Flight()
  */
 void Flight::setId(int newId)
 {
-    id = newId;
+	id = newId;
 }
 
 /**
@@ -52,7 +57,7 @@ void Flight::setId(int newId)
  */
 void Flight::setSensorId(int newSensorId)
 {
-    sensorId = newSensorId;
+	sensorId = newSensorId;
 }
 
 /**
@@ -61,7 +66,7 @@ void Flight::setSensorId(int newSensorId)
  */
 void Flight::setDescription(string newDescription)
 {
-    description = newDescription;
+	description = newDescription;
 }
 
 /**
@@ -70,7 +75,7 @@ void Flight::setDescription(string newDescription)
  */
 void Flight::setExecution(string newExecution)
 {
-    execution = newExecution;
+	execution = newExecution;
 }
 
 /**
@@ -79,7 +84,7 @@ void Flight::setExecution(string newExecution)
  */
 void Flight::setProducerName(string newProducerName)
 {
-    producerName = newProducerName;
+	producerName = newProducerName;
 }
 
 /**
@@ -88,7 +93,7 @@ void Flight::setProducerName(string newProducerName)
  */
 void Flight::setScale(string newScale)
 {
-    scale = newScale;
+	scale = newScale;
 }
 
 /**
@@ -97,7 +102,7 @@ void Flight::setScale(string newScale)
  */
 void Flight::setHeight(double newHeight)
 {
-    height = newHeight;
+	height = newHeight;
 }
 
 /**
@@ -106,7 +111,7 @@ void Flight::setHeight(double newHeight)
  */
 void Flight::setLongitudinalOverlap(double newLongitudinalOverlap)
 {
-    longitudinalOverlap = newLongitudinalOverlap;
+	longitudinalOverlap = newLongitudinalOverlap;
 }
 
 /**
@@ -115,7 +120,7 @@ void Flight::setLongitudinalOverlap(double newLongitudinalOverlap)
  */
 void Flight::setTransversalOverlap(double newTransversalOverlap)
 {
-    transversalOverlap = newTransversalOverlap;
+	transversalOverlap = newTransversalOverlap;
 }
 
 /**
@@ -124,7 +129,7 @@ void Flight::setTransversalOverlap(double newTransversalOverlap)
  */
 int Flight::getId()
 {
-    return id;
+	return id;
 }
 
 /**
@@ -133,7 +138,7 @@ int Flight::getId()
  */
 int Flight::getSensorId()
 {
-    return sensorId;
+	return sensorId;
 }
 
 /**
@@ -142,7 +147,7 @@ int Flight::getSensorId()
  */
 string Flight::getDescription()
 {
-    return description;
+	return description;
 }
 
 /**
@@ -151,7 +156,7 @@ string Flight::getDescription()
  */
 string Flight::getExecution()
 {
-    return execution;
+	return execution;
 }
 
 /**
@@ -160,7 +165,7 @@ string Flight::getExecution()
  */
 string Flight::getProducerName()
 {
-    return producerName;
+	return producerName;
 }
 
 /**
@@ -183,7 +188,7 @@ double Flight::getScaleDen()
  */
 double Flight::getHeight()
 {
-    return height;
+	return height;
 }
 
 /**
@@ -192,7 +197,7 @@ double Flight::getHeight()
  */
 double Flight::getLongitudinalOverlap()
 {
-    return longitudinalOverlap;
+	return longitudinalOverlap;
 }
 
 /**
@@ -201,7 +206,7 @@ double Flight::getLongitudinalOverlap()
  */
 double Flight::getTransversalOverlap()
 {
-    return transversalOverlap;
+	return transversalOverlap;
 }
 
 // Associated objects accessor methods
@@ -231,7 +236,7 @@ Terrain* Flight::getTerrain()
  */
 void Flight::setSensor(Sensor* newSensor)
 {
-    mySensor = newSensor;
+	mySensor = newSensor;
 }
 
 /**
@@ -240,7 +245,7 @@ void Flight::setSensor(Sensor* newSensor)
  */
 Sensor* Flight::getSensor()
 {
-    return mySensor;
+	return mySensor;
 }
 
 /**
@@ -248,12 +253,12 @@ Sensor* Flight::getSensor()
  */
 void Flight::putImage(Image* newImageAssociation)
 {
-    bool insert = true;
-    for (unsigned int i = 0; i < myImages.size(); i++)
-        if (myImages.at(i) == newImageAssociation)
-            insert = false;
-    if (insert)
-        myImages.push_back(newImageAssociation);
+	bool insert = true;
+	for (unsigned int i = 0; i < myImages.size(); i++)
+		if (myImages.at(i) == newImageAssociation)
+			insert = false;
+	if (insert)
+		myImages.push_back(newImageAssociation);
 }
 
 /**
@@ -261,10 +266,10 @@ void Flight::putImage(Image* newImageAssociation)
  */
 Image* Flight::getImage(int imageId)
 {
-    for (unsigned int i = 0; i < myImages.size(); i++)
-        if (myImages.at(i)->getId() == imageId)
-            return myImages.at(i);
-    return NULL;
+	for (unsigned int i = 0; i < myImages.size(); i++)
+		if (myImages.at(i)->getId() == imageId)
+			return myImages.at(i);
+	return NULL;
 }
 
 /**
@@ -272,7 +277,7 @@ Image* Flight::getImage(int imageId)
  */
 int Flight::countImages()
 {
-    return myImages.size();
+	return myImages.size();
 }
 
 /**
@@ -280,87 +285,71 @@ int Flight::countImages()
  */
 Image* Flight::getImageAt(unsigned int index)
 {
-    if (index < myImages.size())
-        return myImages.at(index);
-    return NULL;
+	if (index < myImages.size())
+		return myImages.at(index);
+	return NULL;
 }
 
-// EObject methods
-//
-
-/**
- *
- */
 string Flight::objectType(void)
 {
-    stringstream result;
-    result << "Flight " << id;
-    return result.str();
+	stringstream result;
+	result << "Flight " << id;
+	return result.str();
 }
 
-/**
- *
- */
 string Flight::objectAssociations(void)
 {
-    return mySensor->objectType();
+	return mySensor->objectType();
 }
 
-/**
- *
- */
 bool Flight::is(string s)
 {
-    return (s == "Flight" ? true : false);
+	return (s == "Flight" ? true : false);
 }
 
-// XML Methods
-//
-
-/**
- * 
- */
 void Flight::xmlSetData(string xml)
 {
-    EDomElement root(xml);
-    id = Conversion::stringToInt(root.attribute("key"));
-    sensorId = Conversion::stringToInt(root.attribute("sensor_key"));
+	EDomElement root(xml);
+	id = Conversion::stringToInt(root.attribute("key"));
+	sensorId = Conversion::stringToInt(root.attribute("sensor_key"));
 	flightId = root.elementByTagName("flightId").toString();
-    description = root.elementByTagName("description").toString();
-    execution = root.elementByTagName("execution").toString();
-    producerName = root.elementByTagName("producerName").toString();
-    scale = "";
-    scale += root.elementsByTagName("mml:mn").at(0).toString();
-    scale += ":";
-    scale += root.elementsByTagName("mml:mn").at(1).toString();
+	description = root.elementByTagName("description").toString();
+	execution = root.elementByTagName("execution").toString();
+	producerName = root.elementByTagName("producerName").toString();
+	scale = "";
+	scale += root.elementsByTagName("mml:mn").at(0).toString();
+	scale += ":";
+	scale += root.elementsByTagName("mml:mn").at(1).toString();
 	scaleDen = root.elementsByTagName("mml:mn").at(1).toDouble();
-    height = root.elementByTagName("flightHeight").toDouble();
-    longitudinalOverlap = root.elementByTagName("longitudinal").toDouble();
-    transversalOverlap = root.elementByTagName("transversal").toDouble();
+	height = root.elementByTagName("flightHeight").toDouble();
+	longitudinalOverlap = root.elementByTagName("longitudinal").toDouble();
+	transversalOverlap = root.elementByTagName("transversal").toDouble();
 }
 
-/**
- * 
- */
 string Flight::xmlGetData()
 {
-    stringstream result;
-    result << "<flight key=\"" << Conversion::intToString(id) << "\" sensor_key=\"" << Conversion::intToString(sensorId) << "\">\n";
+	stringstream result;
+	result << "<flight key=\"" << Conversion::intToString(id) << "\" sensor_key=\"" << Conversion::intToString(sensorId) << "\">\n";
 	result << "<flightId>" << flightId << "</flightId>\n";
-    result << "<description>" << description << "</description>\n";
-    result << "<execution>" << execution << "</execution>\n";
-    result << "<producerName>" << producerName << "</producerName>\n";
-    result << "<nominalScale>\n";
-    result << "<mml:mfrac>\n";
-    result << "<mml:mn>" << scale.substr(0, scale.find(":")) << "</mml:mn>\n";
-    result << "<mml:mn>" << scale.substr(scale.find(":") + 1) << "</mml:mn>\n";
-    result << "</mml:mfrac>\n";
-    result << "</nominalScale>\n";
-    result << "<flightHeight uom=\"#m\">" << Conversion::doubleToString(height) << "</flightHeight>\n";
-    result << "<overlap>\n";
-    result << "<longitudinal uom=\"#%\">" << Conversion::doubleToString(longitudinalOverlap) << "</longitudinal>\n";
-    result << "<transversal uom=\"#%\">" << Conversion::doubleToString(transversalOverlap) << "</transversal>\n";
-    result << "</overlap>\n";
-    result << "</flight>\n";
-    return result.str();
+	result << "<description>" << description << "</description>\n";
+	result << "<execution>" << execution << "</execution>\n";
+	result << "<producerName>" << producerName << "</producerName>\n";
+	result << "<nominalScale>\n";
+	result << "<mml:mfrac>\n";
+	result << "<mml:mn>" << scale.substr(0, scale.find(":")) << "</mml:mn>\n";
+	result << "<mml:mn>" << scale.substr(scale.find(":") + 1) << "</mml:mn>\n";
+	result << "</mml:mfrac>\n";
+	result << "</nominalScale>\n";
+	result << "<flightHeight uom=\"#m\">" << Conversion::doubleToString(height) << "</flightHeight>\n";
+	result << "<overlap>\n";
+	result << "<longitudinal uom=\"#%\">" << Conversion::doubleToString(longitudinalOverlap) << "</longitudinal>\n";
+	result << "<transversal uom=\"#%\">" << Conversion::doubleToString(transversalOverlap) << "</transversal>\n";
+	result << "</overlap>\n";
+	result << "</flight>\n";
+	return result.str();
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

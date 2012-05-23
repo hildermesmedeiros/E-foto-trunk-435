@@ -42,7 +42,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../project/resource/project_resource.qrc">:/icons/images/logo.png</pixmap>
+         <pixmap resource="../resource/resource.qrc">:/image/Logo</pixmap>
         </property>
        </widget>
       </item>
@@ -72,6 +72,7 @@
   </layout>
  </widget>
  <resources>
+  <include location="../resource/resource.qrc"/>
   <include location="../project/resource/project_resource.qrc"/>
  </resources>
  <connections/>

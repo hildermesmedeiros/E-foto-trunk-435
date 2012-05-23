@@ -1,11 +1,16 @@
 /**************************************************************************
-						IOQuality.cpp
+	  IOQuality.cpp
 **************************************************************************/
 
 #include "IOQuality.h"
 #include "SensorWithFiducialMarks.h"
 #include "SensorWithKnowDimensions.h"
 #include "InteriorOrientation.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 // Constructors and Destructor
 //
@@ -92,7 +97,7 @@ bool IOQuality::is(string s)
 //
 
 /**
- * 
+ *
  */
 void IOQuality::xmlSetData(string xml)
 {
@@ -113,7 +118,7 @@ void IOQuality::xmlSetData(string xml)
 }
 
 /**
- * 
+ *
  */
 string IOQuality::xmlGetData()
 {
@@ -125,7 +130,7 @@ string IOQuality::xmlGetData()
 	if (sigma0Squared == 1.0)
 		result << "<sigma0Squared>Not Available</sigma0Squared>\n";
 	else
-                result << "<sigma0Squared>" << Conversion::doubleToString(sigma0Squared) << "</sigma0Squared>\n";
+		result << "<sigma0Squared>" << Conversion::doubleToString(sigma0Squared) << "</sigma0Squared>\n";
 	if (SigmaXa.isIdentity())
 		result << "<SigmaXa>Not Available</SigmaXa>\n";
 	else
@@ -148,20 +153,20 @@ string IOQuality::xmlGetData()
 
 /**
  * @name Other methods
- */ 
+ */
 
 /** @{ */
 
 /**
  * This method calculates the values of an IOQuality's attributes based on its Orientation's values.
- * 
+ *
  * Formulae used:
  * \F$ V = A * Xa - Lb \F$
  * \F$ \sigma_{0}^{2} = frac{V^{T} * P * V}{n - m}\F$, where n is the # of observations and m the # of unknowns
  * \F$ \SigmaXa = \sigma_{0}^{2} * (A^{T} * P * A)^{-1} \F$
  * \F$ \SigmaLa = \sigma_{0}^{2} * A (A^{T} * P * A)^{-1} * A^{T} \F$
- * 
- * Reference: Coelho & Brito, Fotogrametria Digital. Rio de Janeiro, 2007. 
+ *
+ * Reference: Coelho & Brito, Fotogrametria Digital. Rio de Janeiro, 2007.
  * @param *myIO, *mySensorWithFiducialMarks
  */
 void IOQuality::calculate(InteriorOrientation* myIO, Sensor* mySensor)
@@ -184,4 +189,7 @@ void IOQuality::calculate(InteriorOrientation* myIO, Sensor* mySensor)
 	}
 }
 
-/** @} */
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

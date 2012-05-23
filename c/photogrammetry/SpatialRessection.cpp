@@ -1,5 +1,5 @@
 /**************************************************************************
-                        SpatialRessection.cpp
+	  SpatialRessection.cpp
 **************************************************************************/
 
 #include "SpatialRessection.h"
@@ -12,6 +12,11 @@
 
 #include <QDebug>
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 // Constructors and destructors
 //
 
@@ -20,10 +25,15 @@
  */
 SpatialRessection::SpatialRessection()
 {
-    pointForFlightDirectionAvailable = false;
+	pointForFlightDirectionAvailable = flightDirectionAvailable = false;
 	totalIterations = 0;
 	gnssConverged = false;
 	insConverged = false;
+
+	if (myImage != NULL)
+		rt = new RayTester(myImage);
+	else
+		rt = NULL;
 
 	useDistortions = true;
 }
@@ -33,11 +43,16 @@ SpatialRessection::SpatialRessection()
  */
 SpatialRessection::SpatialRessection(int myImageId) // Constructor with ids only, needed in project use.
 {
-    imageId = myImageId;
-    pointForFlightDirectionAvailable = false;
+	imageId = myImageId;
+		pointForFlightDirectionAvailable = flightDirectionAvailable = false;
 	totalIterations = 0;
 	gnssConverged = false;
 	insConverged = false;
+
+	if (myImage != NULL)
+		rt = new RayTester(myImage);
+	else
+		rt = NULL;
 
 	useDistortions = true;
 }
@@ -47,7 +62,11 @@ SpatialRessection::SpatialRessection(int myImageId) // Constructor with ids only
  */
 SpatialRessection::~SpatialRessection()
 {
-
+	if (rt != NULL)
+	{
+		delete rt;
+		rt = NULL;
+	}
 }
 
 
@@ -61,7 +80,7 @@ SpatialRessection::~SpatialRessection()
  */
 void SpatialRessection::setXa(const Matrix& newXa)
 {
-    Xa = newXa;
+	Xa = newXa;
 }
 
 /**
@@ -71,7 +90,7 @@ void SpatialRessection::setXa(const Matrix& newXa)
  */
 void SpatialRessection::setLa(const Matrix& newLa)
 {
-    La = newLa;
+	La = newLa;
 }
 
 /**
@@ -81,7 +100,7 @@ void SpatialRessection::setLa(const Matrix& newLa)
  */
 void SpatialRessection::setA(const Matrix& newA)
 {
-    A = newA;
+	A = newA;
 }
 
 /**
@@ -91,7 +110,7 @@ void SpatialRessection::setA(const Matrix& newA)
  */
 void SpatialRessection::setP(const Matrix& newP)
 {
-    P = newP;
+	P = newP;
 }
 
 /**
@@ -101,7 +120,7 @@ void SpatialRessection::setP(const Matrix& newP)
  */
 void SpatialRessection::setX0(const Matrix& newX0)
 {
-    X0 = newX0;
+	X0 = newX0;
 }
 
 /**
@@ -111,7 +130,7 @@ void SpatialRessection::setX0(const Matrix& newX0)
  */
 void SpatialRessection::setL0(const Matrix& newL0)
 {
-    L0 = newL0;
+	L0 = newL0;
 }
 
 /**
@@ -121,7 +140,7 @@ void SpatialRessection::setL0(const Matrix& newL0)
  */
 void SpatialRessection::setLb(const Matrix& newLb)
 {
-    Lb = newLb;
+	Lb = newLb;
 }
 
 /**
@@ -130,7 +149,7 @@ void SpatialRessection::setLb(const Matrix& newLb)
  */
 Matrix SpatialRessection::getXa()
 {
-    return Xa;
+	return Xa;
 }
 
 /**
@@ -139,7 +158,7 @@ Matrix SpatialRessection::getXa()
  */
 Matrix SpatialRessection::getLa()
 {
-    return La;
+	return La;
 }
 
 /**
@@ -148,7 +167,7 @@ Matrix SpatialRessection::getLa()
  */
 Matrix SpatialRessection::getA()
 {
-    return A;
+	return A;
 }
 
 /**
@@ -157,7 +176,7 @@ Matrix SpatialRessection::getA()
  */
 Matrix SpatialRessection::getP()
 {
-    return P;
+	return P;
 }
 
 /**
@@ -166,7 +185,7 @@ Matrix SpatialRessection::getP()
  */
 Matrix SpatialRessection::getX0()
 {
-    return X0;
+	return X0;
 }
 
 /**
@@ -175,7 +194,7 @@ Matrix SpatialRessection::getX0()
  */
 Matrix SpatialRessection::getL0()
 {
-    return L0;
+	return L0;
 }
 
 /**
@@ -184,7 +203,7 @@ Matrix SpatialRessection::getL0()
  */
 Matrix SpatialRessection::getLb()
 {
-    return Lb;
+	return Lb;
 }
 
 /**
@@ -193,7 +212,7 @@ Matrix SpatialRessection::getLb()
  */
 Matrix SpatialRessection::getLastL0()
 {
-    return lastL0;
+	return lastL0;
 }
 
 /**
@@ -201,23 +220,23 @@ Matrix SpatialRessection::getLastL0()
  */
 deque<int> SpatialRessection::getSelectedPoints()
 {
-    return selectedPoints;
+	return selectedPoints;
 }
 
 /**
  *
  */
-DigitalImageSpaceCoordinate* SpatialRessection::getPointForFlightDirection()
+ImageSpaceCoordinate* SpatialRessection::getPointForFlightDirection()
 {
-    if (pointForFlightDirectionAvailable)
-        return &pointForFlightDirection;
-    else
-        return NULL;
+	if (pointForFlightDirectionAvailable)
+		return &pointForFlightDirection;
+	else
+		return NULL;
 }
 
 int SpatialRessection::getTotalIterations()
 {
-    return totalIterations;
+	return totalIterations;
 }
 
 bool SpatialRessection::getConverged()
@@ -239,12 +258,12 @@ bool SpatialRessection::getInsConverged()
 //
 void SpatialRessection::setQuality(EOQuality newQuality)
 {
-    myQuality = newQuality;
+	myQuality = newQuality;
 }
 
 EOQuality SpatialRessection::getQuality()
 {
-    return myQuality;
+	return myQuality;
 }
 
 // Selected points list manipulators
@@ -252,54 +271,63 @@ EOQuality SpatialRessection::getQuality()
 
 void SpatialRessection::selectPoint(int id)
 {
-    bool insert = true;
-    for (unsigned int i = 0; i < selectedPoints.size(); i++)
-        if (selectedPoints.at(i) == id)
-            insert = false;
-    if (insert)
-        selectedPoints.push_back(id);
+	bool insert = true;
+	for (unsigned int i = 0; i < selectedPoints.size(); i++)
+		if (selectedPoints.at(i) == id)
+			insert = false;
+	if (insert)
+		selectedPoints.push_back(id);
 }
 
 void SpatialRessection::unselectPoint(int id)
 {
-    for (unsigned int i = 0; i < selectedPoints.size(); i++)
-        if (selectedPoints.at(i) == id)
-            selectedPoints.erase(selectedPoints.begin() + i);
+	for (unsigned int i = 0; i < selectedPoints.size(); i++)
+		if (selectedPoints.at(i) == id)
+			selectedPoints.erase(selectedPoints.begin() + i);
 }
 
 void SpatialRessection::unselectAllPoints()
 {
-    selectedPoints.clear();
+	selectedPoints.clear();
 }
 
 int SpatialRessection::countSelectedPoints()
 {
-    return selectedPoints.size();
+	return selectedPoints.size();
 }
 
-// Selected fiductial mark or point to indicate the direction of flight manipulators
+// Selected fiducial mark or point to indicate the direction of flight manipulators
 //
 
-void SpatialRessection::setPointForFlightDirection(int col, int lin)
+void SpatialRessection::setFlightDirection(double kappa0)
 {
-    pointForFlightDirection.setCol(col);
-    pointForFlightDirection.setLin(lin);
+    myImage->setFlightDirection(kappa0);
+	flightDirectionAvailable = true;
+	pointForFlightDirectionAvailable = false;
+}
+
+void SpatialRessection::setPointForFlightDirection(double col, double lin)
+{
+	pointForFlightDirection.setCol(col);
+	pointForFlightDirection.setLin(lin);
+    flightDirectionAvailable = false;
     pointForFlightDirectionAvailable = true;
 }
 
-void SpatialRessection::selectFiductialMarkForFlightDirection(int id)
+void SpatialRessection::selectFiducialMarkForFlightDirection(int id)
 {
-    if (myImage != NULL)
-    {
-        pointForFlightDirection.setCol(myImage->getDigFidMark(id).getCol());
-        pointForFlightDirection.setLin(myImage->getDigFidMark(id).getLin());
+	if (myImage != NULL)
+	{
+		pointForFlightDirection.setCol(myImage->getDigFidMark(id).getCol());
+		pointForFlightDirection.setLin(myImage->getDigFidMark(id).getLin());
+        flightDirectionAvailable = false;
         pointForFlightDirectionAvailable = true;
-    }
+	}
 }
 
 void SpatialRessection::unsetPointForFlightDirection()
 {
-    pointForFlightDirectionAvailable = false;
+    flightDirectionAvailable = false;
 }
 
 // EObject methods
@@ -310,9 +338,9 @@ void SpatialRessection::unsetPointForFlightDirection()
  */
 string SpatialRessection::objectType(void)
 {
-    stringstream result;
-    result << "SpatialRessection " << imageId;
-    return result.str();
+	stringstream result;
+	result << "SpatialRessection " << imageId;
+	return result.str();
 }
 
 /**
@@ -320,7 +348,7 @@ string SpatialRessection::objectType(void)
  */
 string SpatialRessection::objectAssociations(void)
 {
-    return myImage->objectType();
+	return myImage->objectType();
 }
 
 /**
@@ -328,79 +356,87 @@ string SpatialRessection::objectAssociations(void)
  */
 bool SpatialRessection::is(string s)
 {
-    return (s == "SpatialRessection" ? true : false);
+	return (s == "SpatialRessection" ? true : false);
 }
 
 // XML methods
 //
 
 /**
- * 
+ *
  */
 void SpatialRessection::xmlSetData(string xml)
 {
-    EDomElement root(xml);
-    imageId = Conversion::stringToInt(root.attribute("image_key"));
-    totalIterations = root.elementByTagName("iterations").toInt();
-    if (root.elementByTagName("converged").toString() == "true")
+	EDomElement root(xml);
+	imageId = Conversion::stringToInt(root.attribute("image_key"));
+	totalIterations = root.elementByTagName("iterations").toInt();
+	if (root.elementByTagName("converged").toString() == "true")
 		gnssConverged = insConverged = true;
-    else
+	else
 		gnssConverged = insConverged = false;
-    Lb.xmlSetData(root.elementByTagName("Lb").elementByTagName("mml:matrix").getContent());
 
-    Xa.resize(6,1);
-    EDomElement xmlXa = root.elementByTagName("Xa");
-    Xa.set(1,1, xmlXa.elementByTagName("X0").toDouble());
-    Xa.set(2,1, xmlXa.elementByTagName("Y0").toDouble());
-    Xa.set(3,1, xmlXa.elementByTagName("Z0").toDouble());
-    Xa.set(4,1, xmlXa.elementByTagName("phi").toDouble());
-    Xa.set(5,1, xmlXa.elementByTagName("omega").toDouble());
-    Xa.set(6,1, xmlXa.elementByTagName("kappa").toDouble());
+    deque<EDomElement> pts = root.elementByTagName("usedPoints").children();
+    selectedPoints.clear();
+    for(int i = 0; i < pts.size();i++)
+    {
+        selectedPoints.push_back(pts.at(i).elementByTagName("pointKey").toInt());
+    }
 
-    L0.xmlSetData(root.elementByTagName("L0").elementByTagName("mml:matrix").getContent());
+	Lb.xmlSetData(root.elementByTagName("Lb").elementByTagName("mml:matrix").getContent());
 
-    X0.resize(6,1);
-    // Aqui vem a maldição do nome igual. Tem um elemento X0 dentro do Xa, e um X0 fora. Quero achar o fora.
-    // Eu poderia fazer o acesso diretamente pelo nome dos elementos internos, mas seria dar muitas voltas no XML.
-    EDomElement xmlX0;
-    deque<EDomElement> xmlX0s = root.elementsByTagName("X0");
-    for (unsigned int i = 0; i < xmlX0s.size(); i++)
-        if (xmlX0s.at(i).children().size() == 6)
-            xmlX0 = xmlX0s.at(i);
-    X0.set(1,1, xmlX0.elementByTagName("X00").toDouble());
-    X0.set(2,1, xmlX0.elementByTagName("Y00").toDouble());
-    X0.set(3,1, xmlX0.elementByTagName("Z00").toDouble());
-    X0.set(4,1, xmlX0.elementByTagName("phi0").toDouble());
-    X0.set(5,1, xmlX0.elementByTagName("omega0").toDouble());
-    X0.set(6,1, xmlX0.elementByTagName("kappa0").toDouble());
+	Xa.resize(6,1);
+	EDomElement xmlXa = root.elementByTagName("Xa");
+	Xa.set(1,1, xmlXa.elementByTagName("X0").toDouble());
+	Xa.set(2,1, xmlXa.elementByTagName("Y0").toDouble());
+	Xa.set(3,1, xmlXa.elementByTagName("Z0").toDouble());
+	Xa.set(4,1, xmlXa.elementByTagName("phi").toDouble());
+	Xa.set(5,1, xmlXa.elementByTagName("omega").toDouble());
+	Xa.set(6,1, xmlXa.elementByTagName("kappa").toDouble());
 
-    myQuality.xmlSetData(root.elementByTagName("quality").getContent());
+	L0.xmlSetData(root.elementByTagName("L0").elementByTagName("mml:matrix").getContent());
+
+	X0.resize(6,1);
+	// Aqui vem a maldiÃ§Ã£o do nome igual. Tem um elemento X0 dentro do Xa, e um X0 fora. Quero achar o fora.
+	// Eu poderia fazer o acesso diretamente pelo nome dos elementos internos, mas seria dar muitas voltas no XML.
+	EDomElement xmlX0;
+	deque<EDomElement> xmlX0s = root.elementsByTagName("X0");
+	for (unsigned int i = 0; i < xmlX0s.size(); i++)
+		if (xmlX0s.at(i).children().size() == 6)
+			xmlX0 = xmlX0s.at(i);
+	X0.set(1,1, xmlX0.elementByTagName("X00").toDouble());
+	X0.set(2,1, xmlX0.elementByTagName("Y00").toDouble());
+	X0.set(3,1, xmlX0.elementByTagName("Z00").toDouble());
+	X0.set(4,1, xmlX0.elementByTagName("phi0").toDouble());
+	X0.set(5,1, xmlX0.elementByTagName("omega0").toDouble());
+	X0.set(6,1, xmlX0.elementByTagName("kappa0").toDouble());
+
+	myQuality.xmlSetData(root.elementByTagName("quality").getContent());
 }
 
 /**
- * 
+ *
  */
 string SpatialRessection::xmlGetData()
 {
     stringstream result;
-    result << "<imageEO type=\"spatialRessection\" image_key=\"" << Conversion::intToString(imageId) << "\">\n";
+    result << "<imageSR image_key=\"" << Conversion::intToString(imageId) << "\">\n";
     result << "<iterations>" << Conversion::intToString(totalIterations) << "</iterations>\n";
-	if (gnssConverged && insConverged)
+    if (gnssConverged && insConverged)
         result << "<converged>true</converged>\n";
     else
         result << "<converged>false</converged>\n";
     result << "<parameters>\n";
+
+    result << "<usedPoints>\n";
+    for (int i=0;i<selectedPoints.size();i++)
+    {
+        result << "<pointKey>" <<	Conversion::intToString(selectedPoints.at(i))	<<"</pointKey>\n";
+    }
+    result << "</usedPoints>\n";
+
     result << "<Lb>\n";
     result << Lb.xmlGetData();
     result << "</Lb>\n";
-    result << "<Xa>\n";
-    result << "<X0 uom=\"#m\">" << Conversion::doubleToString(Xa.get(1,1)) << "</X0>\n";
-    result << "<Y0 uom=\"#m\">" << Conversion::doubleToString(Xa.get(2,1)) << "</Y0>\n";
-    result << "<Z0 uom=\"#m\">" << Conversion::doubleToString(Xa.get(3,1)) << "</Z0>\n";
-    result << "<phi uom=\"#rad\">" << Conversion::doubleToString(Xa.get(4,1)) << "</phi>\n";
-    result << "<omega uom=\"#rad\">" << Conversion::doubleToString(Xa.get(5,1)) << "</omega>\n";
-    result << "<kappa uom=\"#rad\">" << Conversion::doubleToString(Xa.get(6,1)) << "</kappa>\n";
-    result << "</Xa>\n";
     result << "<L0>\n";
     result << L0.xmlGetData();
     result << "</L0>\n";
@@ -414,131 +450,167 @@ string SpatialRessection::xmlGetData()
     result << "</X0>\n";
     result << "</parameters>\n";
     result << myQuality.xmlGetData();
-    result << "</imageEO>\n";
+    result << "</imageSR>\n";
     return result.str();
+}
+
+string SpatialRessection::xmlGetDataEO()
+{
+    stringstream result;
+    result << "<imageEO type=\"spatialRessection\" image_key=\"" << Conversion::intToString(imageId) << "\">\n";
+    result << "<Xa>\n";
+    result << "<X0 uom=\"#m\">" << Conversion::doubleToString(Xa.get(1,1)) << "</X0>\n";
+    result << "<Y0 uom=\"#m\">" << Conversion::doubleToString(Xa.get(2,1)) << "</Y0>\n";
+    result << "<Z0 uom=\"#m\">" << Conversion::doubleToString(Xa.get(3,1)) << "</Z0>\n";
+    result << "<phi uom=\"#rad\">" << Conversion::doubleToString(Xa.get(4,1)) << "</phi>\n";
+    result << "<omega uom=\"#rad\">" << Conversion::doubleToString(Xa.get(5,1)) << "</omega>\n";
+    result << "<kappa uom=\"#rad\">" << Conversion::doubleToString(Xa.get(6,1)) << "</kappa>\n";
+    result << "</Xa>\n";
+    result << "</imageEO>\n";
+	return result.str();
 }
 
 // Other methods
 //
 
-void SpatialRessection::generateR()
+/*//////////////////////////////////////////////////////////////////////////////////////////////////
+  Aqui tem codigo da PR
+  ////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+/*void SpatialRessection::generateR()
 {
-    r11 = cos(phi0) * cos(kappa0);
-    r12 = -cos(phi0) * sin(kappa0);
-    r13 = sin(phi0);
-    r21 = cos(omega0) * sin(kappa0) + sin(omega0) * sin(phi0) * cos(kappa0);
-    r22 = cos(omega0) * cos(kappa0) - sin(omega0) * sin(phi0) * sin(kappa0);
-    r23 = -sin(omega0) * cos(phi0);
-    r31 = sin(omega0) * sin(kappa0) - cos(omega0) * sin(phi0) * cos(kappa0);
-    r32 = sin(omega0) * cos(kappa0) + cos(omega0) * sin(phi0) * sin(kappa0);
-    r33 = cos(omega0) * cos(phi0);
+ r11 = cos(phi0) * cos(kappa0);
+ r12 = -cos(phi0) * sin(kappa0);
+ r13 = sin(phi0);
+ r21 = cos(omega0) * sin(kappa0) + sin(omega0) * sin(phi0) * cos(kappa0);
+ r22 = cos(omega0) * cos(kappa0) - sin(omega0) * sin(phi0) * sin(kappa0);
+ r23 = -sin(omega0) * cos(phi0);
+ r31 = sin(omega0) * sin(kappa0) - cos(omega0) * sin(phi0) * cos(kappa0);
+ r32 = sin(omega0) * cos(kappa0) + cos(omega0) * sin(phi0) * sin(kappa0);
+ r33 = cos(omega0) * cos(phi0);
 }
+
+110627 - The R matrix is now calculated inside the RayTester class.
+
+*/
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////
+  Aqui tem codigo da PR
+  ////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 void SpatialRessection::generateInitialA()
 {
-    if (myImage != NULL)
-    {
-        A.resize(selectedPoints.size() * 2, 6).zero();
-        for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
-        {
-            // Essas linhas estão horríveis de ler!!! Mas não consigo melhorar mais que isso...
-            Point* myPoint = myImage->getPoint(selectedPoints.at(i)); // Escolhi aqui o ponto que estou usando.
-            AnalogImageSpaceCoordinate myCoordinate = myPoint->getAnalogCoordinate(myImage->getId()); // Tento tirar as coordenadas analógicas dele.
-            if (myCoordinate.getUnit() == "") // Se essas coordenadas analógicas não existirem, acusadas pela falta de unidade...
-                myCoordinate = myImage->getIO()->digitalToAnalog(myPoint->getDigitalCoordinate(myImage->getId())); // Crio elas usando digitalToAnalog nas coordenadas digitais.
+	if (myImage != NULL)
+	{
+		A.resize(selectedPoints.size() * 2, 6).zero();
+		for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
+		{
+			// Essas linhas estÃ£o horrÃ­veis de ler!!! Mas nÃ£o consigo melhorar mais que isso...
+			Point* myPoint = myImage->getPoint(selectedPoints.at(i)); // Escolhi aqui o ponto que estou usando.
+			DetectorSpaceCoordinate myCoordinate = myPoint->getDetectorCoordinate(myImage->getId()); // Tento tirar as coordenadas analÃ³gicas dele.
+			if (myCoordinate.getUnit() == "") // Se essas coordenadas analÃ³gicas nÃ£o existirem, acusadas pela falta de unidade...
+				myCoordinate = rt->imageToDetector(myPoint->getImageCoordinate(myImage->getId()));
+			//myCoordinate = myImage->getIO()->digitalToAnalog(myPoint->getDigitalCoordinate(myImage->getId())); // Crio elas usando digitalToAnalog nas coordenadas digitais.
 
 			// Distortions added.
 			//if (useDistortions)
-				//myCoordinate = applyDistortions(myCoordinate);
-				//myCoordinate = removeDistortions(myCoordinate);
+			//myCoordinate = applyDistortions(myCoordinate);
+			//myCoordinate = removeDistortions(myCoordinate);
 
-            A.set(j,1,1.0);
-            A.set(j,2,myCoordinate.getXi());
-            A.set(j,3,myCoordinate.getEta());
-            A.set(j+1,4,1.0);
-            A.set(j+1,5,myCoordinate.getXi());
-            A.set(j+1,6,myCoordinate.getEta());
-        }
-    }
+			A.set(j,1,1.0);
+			A.set(j,2,myCoordinate.getXi());
+			A.set(j,3,myCoordinate.getEta());
+			A.set(j+1,4,1.0);
+			A.set(j+1,5,myCoordinate.getXi());
+			A.set(j+1,6,myCoordinate.getEta());
+		}
+	}
 }
 
 void SpatialRessection::generateInitialL0()
 {
-    if (myImage != NULL)
-    {
-        L0.resize(selectedPoints.size() * 2, 1);
-        for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
-        {
-            Point* myPoint = myImage->getPoint(selectedPoints.at(i));
-            ObjectSpaceCoordinate myCoordinate = myPoint->getObjectCoordinate();
+	if (myImage != NULL)
+	{
+		L0.resize(selectedPoints.size() * 2, 1);
+		for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
+		{
+			Point* myPoint = myImage->getPoint(selectedPoints.at(i));
+			ObjectSpaceCoordinate myCoordinate = myPoint->getObjectCoordinate();
 
-            L0.set(j,1,myCoordinate.getX());
-            L0.set(j+1,1,myCoordinate.getY());
-        }
-    }
+			L0.set(j,1,myCoordinate.getX());
+			L0.set(j+1,1,myCoordinate.getY());
+		}
+	}
 }
 
 void SpatialRessection::generateInitialP()
 {
-    P.identity(selectedPoints.size() * 2);
+	P.identity(selectedPoints.size() * 2);
 }
 
 void SpatialRessection::generateA()
 {
-    if (myImage != NULL)
-    {
-        A.resize(selectedPoints.size() * 2, 6);
-        double c = myImage->getSensor()->getFocalDistance();
+	if (myImage != NULL)
+	{
+		A.resize(selectedPoints.size() * 2, 6);
+		double c = myImage->getSensor()->getFocalDistance();
 
-        for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
-        {
-            Point* myPoint = myImage->getPoint(selectedPoints.at(i));
-            ObjectSpaceCoordinate myCoordinate = myPoint->getObjectCoordinate();
-            double X = myCoordinate.getX();
-            double Y = myCoordinate.getY();
-            double Z = myCoordinate.getZ();
+		for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
+		{
+			Point* myPoint = myImage->getPoint(selectedPoints.at(i));
+			ObjectSpaceCoordinate myCoordinate = myPoint->getObjectCoordinate();
+			double X = myCoordinate.getX();
+			double Y = myCoordinate.getY();
+			double Z = myCoordinate.getZ();
 
-            A.set(j,1,c*cos(kappa0)*cos(phi0)/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))-c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*sin(phi0));
-            A.set(j,2,-c*(-sin(kappa0)*cos(omega0)-cos(kappa0)*sin(phi0)*sin(omega0))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*cos(phi0)*sin(omega0));
-            A.set(j,3,-c*(-sin(kappa0)*sin(omega0)+cos(kappa0)*sin(phi0)*cos(omega0))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))-c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*cos(phi0)*cos(omega0));
-            A.set(j,4,-c*(-cos(kappa0)*sin(phi0)*(X-X00)+cos(kappa0)*cos(phi0)*sin(omega0)*(Y-Y00)-cos(kappa0)*cos(phi0)*cos(omega0)*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*(cos(phi0)*(X-X00)+sin(phi0)*sin(omega0)*(Y-Y00)-sin(phi0)*cos(omega0)*(Z-Z00)));
-            A.set(j,5,-c*((-sin(kappa0)*sin(omega0)+cos(kappa0)*sin(phi0)*cos(omega0))*(Y-Y00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*(-cos(phi0)*cos(omega0)*(Y-Y00)-cos(phi0)*sin(omega0)*(Z-Z00)));
-            A.set(j,6,-c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)));
+			A.set(j,1,c*cos(kappa0)*cos(phi0)/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))-c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*sin(phi0));
+			A.set(j,2,-c*(-sin(kappa0)*cos(omega0)-cos(kappa0)*sin(phi0)*sin(omega0))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*cos(phi0)*sin(omega0));
+			A.set(j,3,-c*(-sin(kappa0)*sin(omega0)+cos(kappa0)*sin(phi0)*cos(omega0))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))-c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*cos(phi0)*cos(omega0));
+			A.set(j,4,-c*(-cos(kappa0)*sin(phi0)*(X-X00)+cos(kappa0)*cos(phi0)*sin(omega0)*(Y-Y00)-cos(kappa0)*cos(phi0)*cos(omega0)*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*(cos(phi0)*(X-X00)+sin(phi0)*sin(omega0)*(Y-Y00)-sin(phi0)*cos(omega0)*(Z-Z00)));
+			A.set(j,5,-c*((-sin(kappa0)*sin(omega0)+cos(kappa0)*sin(phi0)*cos(omega0))*(Y-Y00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(cos(kappa0)*cos(phi0)*(X-X00)+(sin(kappa0)*cos(omega0)+cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(sin(kappa0)*sin(omega0)-cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*(-cos(phi0)*cos(omega0)*(Y-Y00)-cos(phi0)*sin(omega0)*(Z-Z00)));
+			A.set(j,6,-c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)));
 
-            A.set(j+1,1,-c*sin(kappa0)*cos(phi0)/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))-c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*sin(phi0));
-            A.set(j+1,2,-c*(-cos(kappa0)*cos(omega0)+sin(kappa0)*sin(phi0)*sin(omega0))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*cos(phi0)*sin(omega0));
-            A.set(j+1,3,-c*(-cos(kappa0)*sin(omega0)-sin(kappa0)*sin(phi0)*cos(omega0))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))-c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*cos(phi0)*cos(omega0));
-            A.set(j+1,4,-c*(sin(kappa0)*sin(phi0)*(X-X00)-sin(kappa0)*cos(phi0)*sin(omega0)*(Y-Y00)+sin(kappa0)*cos(phi0)*cos(omega0)*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*(cos(phi0)*(X-X00)+sin(phi0)*sin(omega0)*(Y-Y00)-sin(phi0)*cos(omega0)*(Z-Z00)));
-            A.set(j+1,5,-c*((-cos(kappa0)*sin(omega0)-sin(kappa0)*sin(phi0)*cos(omega0))*(Y-Y00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*(-cos(phi0)*cos(omega0)*(Y-Y00)-cos(phi0)*sin(omega0)*(Z-Z00)));
-            A.set(j+1,6,-c*(-cos(kappa0)*cos(phi0)*(X-X00)+(-sin(kappa0)*cos(omega0)-cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(-sin(kappa0)*sin(omega0)+cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)));
-        }
-    }
+			A.set(j+1,1,-c*sin(kappa0)*cos(phi0)/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))-c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*sin(phi0));
+			A.set(j+1,2,-c*(-cos(kappa0)*cos(omega0)+sin(kappa0)*sin(phi0)*sin(omega0))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*cos(phi0)*sin(omega0));
+			A.set(j+1,3,-c*(-cos(kappa0)*sin(omega0)-sin(kappa0)*sin(phi0)*cos(omega0))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))-c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*cos(phi0)*cos(omega0));
+			A.set(j+1,4,-c*(sin(kappa0)*sin(phi0)*(X-X00)-sin(kappa0)*cos(phi0)*sin(omega0)*(Y-Y00)+sin(kappa0)*cos(phi0)*cos(omega0)*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*(cos(phi0)*(X-X00)+sin(phi0)*sin(omega0)*(Y-Y00)-sin(phi0)*cos(omega0)*(Z-Z00)));
+			A.set(j+1,5,-c*((-cos(kappa0)*sin(omega0)-sin(kappa0)*sin(phi0)*cos(omega0))*(Y-Y00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00))+c*(-sin(kappa0)*cos(phi0)*(X-X00)+(cos(kappa0)*cos(omega0)-sin(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(cos(kappa0)*sin(omega0)+sin(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/pow((sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)),2)*(-cos(phi0)*cos(omega0)*(Y-Y00)-cos(phi0)*sin(omega0)*(Z-Z00)));
+			A.set(j+1,6,-c*(-cos(kappa0)*cos(phi0)*(X-X00)+(-sin(kappa0)*cos(omega0)-cos(kappa0)*sin(phi0)*sin(omega0))*(Y-Y00)+(-sin(kappa0)*sin(omega0)+cos(kappa0)*sin(phi0)*cos(omega0))*(Z-Z00))/(sin(phi0)*(X-X00)-cos(phi0)*sin(omega0)*(Y-Y00)+cos(phi0)*cos(omega0)*(Z-Z00)));
+		}
+	}
 }
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////
+  Aqui tem codigo da PR
+  ////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 void SpatialRessection::generateL0()
 {
-    if (myImage != NULL)
-    {
-        L0.resize(selectedPoints.size() * 2, 1);
-        double c = myImage->getSensor()->getFocalDistance();
-        double xi0 = myImage->getSensor()->getPrincipalPointCoordinates().getXi();
-        double eta0 = myImage->getSensor()->getPrincipalPointCoordinates().getEta();
+	if (myImage != NULL)
+	{
+		L0.resize(selectedPoints.size() * 2, 1);
+		//double c = myImage->getSensor()->getFocalDistance();
+		//double xi0 = myImage->getSensor()->getPrincipalPointCoordinates().getXi();
+		//double eta0 = myImage->getSensor()->getPrincipalPointCoordinates().getEta();
 
-        generateR();
+		//generateR();
 
-        for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
-        {
-            Point* myPoint = myImage->getPoint(selectedPoints.at(i));
-            ObjectSpaceCoordinate myCoordinate = myPoint->getObjectCoordinate();
-            double X = myCoordinate.getX();
-            double Y = myCoordinate.getY();
-            double Z = myCoordinate.getZ();
+		rt->setEOParameters(X0);
+
+		for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
+		{
+			Point* myPoint = myImage->getPoint(selectedPoints.at(i));
+			ObjectSpaceCoordinate myCoordinate = myPoint->getObjectCoordinate();
+
+			//double X = myCoordinate.getX();
+			//double Y = myCoordinate.getY();
+			//double Z = myCoordinate.getZ();
 
 			//double L0xi = xi0-c*(r11*(X-X00)+r21*(Y-Y00)+r31*(Z-Z00))/(r13*(X-X00)+r23*(Y-Y00)+r33*(Z-Z00));
 			//double L0eta = eta0-c*(r12*(X-X00)+r22*(Y-Y00)+r32*(Z-Z00))/(r13*(X-X00)+r23*(Y-Y00)+r33*(Z-Z00));
 
-			//AnalogImageSpaceCoordinate newXiEta = applyDistortions(L0xi, L0eta);
-			//AnalogImageSpaceCoordinate newXiEta = removeDistortions(L0xi, L0eta);
+			//DetectorSpaceCoordinate newXiEta = applyDistortions(L0xi, L0eta);
+			//DetectorSpaceCoordinate newXiEta = removeDistortions(L0xi, L0eta);
 
 			//double newXi = newXiEta.getXi();
 			//double newEta = newXiEta.getEta();
@@ -546,80 +618,97 @@ void SpatialRessection::generateL0()
 			//L0.set(j,1,newXi);
 			//L0.set(j+1,1,newEta);
 
-			L0.set(j,1,xi0-c*(r11*(X-X00)+r21*(Y-Y00)+r31*(Z-Z00))/(r13*(X-X00)+r23*(Y-Y00)+r33*(Z-Z00)));
-			L0.set(j+1,1,eta0-c*(r12*(X-X00)+r22*(Y-Y00)+r32*(Z-Z00))/(r13*(X-X00)+r23*(Y-Y00)+r33*(Z-Z00)));
-        }
-    }
+			//L0.set(j,1,xi0-c*(r11*(X-X00)+r21*(Y-Y00)+r31*(Z-Z00))/(r13*(X-X00)+r23*(Y-Y00)+r33*(Z-Z00)));
+			//L0.set(j+1,1,eta0-c*(r12*(X-X00)+r22*(Y-Y00)+r32*(Z-Z00))/(r13*(X-X00)+r23*(Y-Y00)+r33*(Z-Z00)));
+
+			DetectorSpaceCoordinate analog = rt->objectToDetector(myCoordinate);
+
+			L0.set(j, 1, analog.getXi());
+			L0.set(j+1, 1, analog.getEta());
+		}
+	}
 }
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////
+  Aqui tem codigo da PR
+  ////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 void SpatialRessection::generateLb()
 {
-    if (myImage != NULL)
-    {
-        Lb.resize(selectedPoints.size() * 2, 1);
-        for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
-        {
-            // Mesmo código horrível do A inicial.
-            Point* myPoint = myImage->getPoint(selectedPoints.at(i));
-            AnalogImageSpaceCoordinate myCoordinate = myPoint->getAnalogCoordinate(myImage->getId());
-            if (myCoordinate.getUnit() == "")
-                myCoordinate = myImage->getIO()->digitalToAnalog(myPoint->getDigitalCoordinate(myImage->getId()));
+	if (myImage != NULL)
+	{
+		Lb.resize(selectedPoints.size() * 2, 1);
+		for (unsigned int i = 0, j = 1; i < selectedPoints.size(); i++, j+=2)
+		{
+			// Mesmo cÃ³digo horrÃ­vel do A inicial.
+			Point* myPoint = myImage->getPoint(selectedPoints.at(i));
+			DetectorSpaceCoordinate myCoordinate = myPoint->getDetectorCoordinate(myImage->getId());
+			if (myCoordinate.getUnit() == "")
+				myCoordinate = rt->imageToDetector(myPoint->getImageCoordinate(myImage->getId()));
+			//myCoordinate = myImage->getIO()->digitalToAnalog(myPoint->getDigitalCoordinate(myImage->getId()));
 
 			// Distortions added.
 			//if (useDistortions)
-				//myCoordinate = applyDistortions(myCoordinate);
-				//myCoordinate = removeDistortions(myCoordinate);
+			//myCoordinate = applyDistortions(myCoordinate);
+			//myCoordinate = removeDistortions(myCoordinate);
 
-            Lb.set(j,1,myCoordinate.getXi());
-            Lb.set(j+1,1,myCoordinate.getEta());
-        }
-    }
+			Lb.set(j,1,myCoordinate.getXi());
+			Lb.set(j+1,1,myCoordinate.getEta());
+		}
+	}
 }
 
 void SpatialRessection::generateP()
 {
-    P.identity(selectedPoints.size() * 2);
+	P.identity(selectedPoints.size() * 2);
 }
 
 void SpatialRessection::generateX0()
 {
-    X0 = Xa;
-    X00 = X0.get(1,1);
-    Y00 = X0.get(2,1);
-    Z00 = X0.get(3,1);
-    phi0 = X0.get(4,1);
-    omega0 = X0.get(5,1);
-    kappa0 = X0.get(6,1);
+	X0 = Xa;
+	X00 = X0.get(1,1);
+	Y00 = X0.get(2,1);
+	Z00 = X0.get(3,1);
+	phi0 = X0.get(4,1);
+	omega0 = X0.get(5,1);
+	kappa0 = X0.get(6,1);
 }
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////
+  Aqui tem codigo da PR
+  ////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 void SpatialRessection::initialize()
 {
-    if (myImage != NULL && myImage->getSensor() != NULL && myImage->getFlight() != NULL && myImage->getIO() != NULL && pointForFlightDirectionAvailable)
+		if (myImage != NULL && myImage->getSensor() != NULL && myImage->getFlight() != NULL && myImage->getIO() != NULL && (pointForFlightDirectionAvailable || flightDirectionAvailable))
 	{
-        generateInitialA();
-        generateInitialL0();
-        generateInitialP();
+		rt->setImage(myImage);
+		rt->setIOParameters(myImage->getIO()->getXa());
 
-        // Calculating X00 and Y00.
-        double xi0 = myImage->getSensor()->getPrincipalPointCoordinates().getXi();
-        double eta0 = myImage->getSensor()->getPrincipalPointCoordinates().getEta();
+		generateInitialA();
+		generateInitialL0();
+		generateInitialP();
 
-        // Warning: this Xa is NOT the one containing the EO's parameters.
-        // It's just used for determining the initial X00 and Y00 and will be erased at the end of initialization.
-        Matrix Xa = (A.transpose() * P * A).inverse() * A.transpose() * P * L0;
-        X00 = Xa.get(1,1) + xi0 * Xa.get(2,1) + eta0 * Xa.get(3,1);
-        Y00 = Xa.get(4,1) + xi0 * Xa.get(5,1) + eta0 * Xa.get(6,1);
+		// Calculating X00 and Y00.
+		double xi0 = myImage->getSensor()->getPrincipalPointCoordinates().getXi();
+		double eta0 = myImage->getSensor()->getPrincipalPointCoordinates().getEta();
+
+		// Warning: this Xa is NOT the one containing the EO's parameters.
+		// It's just used for determining the initial X00 and Y00 and will be erased at the end of initialization.
+		Matrix Xa = (A.transpose() * P * A).inverse() * A.transpose() * P * L0;
+		X00 = Xa.get(1,1) + xi0 * Xa.get(2,1) + eta0 * Xa.get(3,1);
+		Y00 = Xa.get(4,1) + xi0 * Xa.get(5,1) + eta0 * Xa.get(6,1);
 
 		// Z00 comes from flight height.
 
 		// If flightHeight is the flight's height, this is correct.
 		/*
-		double mediumPointHeight = 0;
-		for (unsigned int i = 0; i < selectedPoints.size(); i++)
-			mediumPointHeight += myImage->getPoint(selectedPoints.at(i))->getObjectCoordinate().getZ();
-		mediumPointHeight /= (selectedPoints.size());
-		Z00 = myImage->getFlight()->getHeight() + mediumPointHeight;
-		*/
+  double mediumPointHeight = 0;
+  for (unsigned int i = 0; i < selectedPoints.size(); i++)
+   mediumPointHeight += myImage->getPoint(selectedPoints.at(i))->getObjectCoordinate().getZ();
+  mediumPointHeight /= (selectedPoints.size());
+  Z00 = myImage->getFlight()->getHeight() + mediumPointHeight;
+  */
 
 		//or
 		double meanAltitude = myImage->getFlight()->getTerrain()->getMeanAltitude();
@@ -628,39 +717,39 @@ void SpatialRessection::initialize()
 		// If flightHeight is the flight's altitude, this is correct.
 		//Z00 = myImage->getFlight()->getHeight();
 
-        // Omega0 and phi0 are initially set to 0.
-        omega0 = 0;
-        phi0 = 0;
+		// Omega0 and phi0 are initially set to 0.
+		omega0 = 0;
+		phi0 = 0;
 
-        // Calculating kappa0.
-        AnalogImageSpaceCoordinate fiductialCoordinate = myImage->getIO()->digitalToAnalog(pointForFlightDirection.getCol(),pointForFlightDirection.getLin());
+				if (flightDirectionAvailable)
+                    kappa0 = myImage->getFlightDirection();
+				else
+				{
+					// Calculating kappa0.
+					DetectorSpaceCoordinate fiducialCoordinate = rt->imageToDetector(pointForFlightDirection.getCol(),pointForFlightDirection.getLin());
 
-		// Distortions added.
-		//if (useDistortions)
-			//fiductialCoordinate = applyDistortions(fiductialCoordinate);
-			//fiductialCoordinate = removeDistortions(fiductialCoordinate);
+					double fiducialXi = fiducialCoordinate.getXi();
+					double fiducialEta = fiducialCoordinate.getEta();
 
-        double fiductialXi = fiductialCoordinate.getXi();
-        double fiductialEta = fiductialCoordinate.getEta();
+					double fiducialX = Xa.get(1,1) + fiducialXi * Xa.get(2,1) + fiducialEta * Xa.get(3,1);
+					double fiducialY = Xa.get(4,1) + fiducialXi * Xa.get(5,1) + fiducialEta * Xa.get(6,1);
 
-        double fiductialX = Xa.get(1,1) + fiductialXi * Xa.get(2,1) + fiductialEta * Xa.get(3,1);
-        double fiductialY = Xa.get(4,1) + fiductialXi * Xa.get(5,1) + fiductialEta * Xa.get(6,1);
+					double deltaX = fiducialX - X00;
+					double deltaY = fiducialY - Y00;
 
-        double deltaX = fiductialX - X00;
-        double deltaY = fiductialY - Y00;
+					double angle = atan(fabs(deltaY/deltaX));
+					if ((deltaX >= 0.0) && (deltaY >= 0.0))
+			kappa0 = angle;
+					if ((deltaX < 0.0) && (deltaY >= 0.0))
+			kappa0 = M_PI - angle;
+					if ((deltaX < 0.0) && (deltaY < 0.0))
+			kappa0 = M_PI + angle;
+					if ((deltaX >= 0.0) && (deltaY < 0.0))
+			kappa0 = -angle;
+				}
 
-        double angle = atan(fabs(deltaY/deltaX));
-        if ((deltaX >= 0.0) && (deltaY >= 0.0))
-            kappa0 = angle;
-        if ((deltaX < 0.0) && (deltaY >= 0.0))
-            kappa0 = M_PI - angle;
-        if ((deltaX < 0.0) && (deltaY < 0.0))
-            kappa0 = M_PI + angle;
-        if ((deltaX >= 0.0) && (deltaY < 0.0))
-            kappa0 = -angle;
-
-        // Setting the values to X0 and reseting Xa.
-        X0.resize(6, 1);
+		// Setting the values to X0 and reseting Xa.
+		X0.resize(6, 1);
 
 		if (!myImage->isGnssAvailable() || (myImage->isGnssAvailable() && myImage->getGnssType() != "Unused"))
 		{
@@ -687,21 +776,21 @@ void SpatialRessection::initialize()
 			X0.set(6, 1, myImage->getInsKappa());
 		}
 
-        generateL0();
-    }
+		generateL0();
+	}
 }
 
 bool SpatialRessection::calculate(int maxIterations, double gnssPrecision, double insPrecision)
 {
 	gnssConverged = false;
 	insConverged = false;
-    if (myImage != NULL && myImage->getSensor() != NULL && myImage->getFlight() != NULL && myImage->getIO() != NULL && pointForFlightDirectionAvailable)
-    {
-        int iterations = 0;
+		if (myImage != NULL && myImage->getSensor() != NULL && myImage->getFlight() != NULL && myImage->getIO() != NULL && (pointForFlightDirectionAvailable || flightDirectionAvailable))
+	{
+		int iterations = 0;
 
-		Matrix X0temp, L0temp, firstA;
-        X0temp = X0;
-        L0temp = L0;
+		Matrix X0temp, L0temp;
+		X0temp = X0;
+		L0temp = L0;
 
 		if (!(myImage->isGnssAvailable() && myImage->getGnssType() == "Fixed" &&
 			  myImage->isInsAvailable() && myImage->getInsType() == "Fixed"))
@@ -711,8 +800,6 @@ bool SpatialRessection::calculate(int maxIterations, double gnssPrecision, doubl
 
 				generateLb();
 				generateA();
-				if (iterations == 0)
-					firstA = A;
 				generateP();
 
 				Xa = X0 - ((A.transpose() * P * A).inverse() * A.transpose() * P * (L0 - Lb));
@@ -754,7 +841,6 @@ bool SpatialRessection::calculate(int maxIterations, double gnssPrecision, doubl
 				iterations++;
 			}
 		}
-		/*
 		else
 		{
 			generateLb();
@@ -769,42 +855,37 @@ bool SpatialRessection::calculate(int maxIterations, double gnssPrecision, doubl
 			Xa.set(6, 1, myImage->getInsKappa());
 			gnssConverged = insConverged = true;
 		}
-		*/
 
 		totalIterations = iterations;
 
-        lastL0 = L0;
+		lastL0 = L0;
 
-        X0 = X0temp;
-        L0 = L0temp;
+		X0 = X0temp;
+		L0 = L0temp;
 
-        myQuality.calculate(this);
-
-		setLa(Lb + myQuality.getV());
-
-
-    }
+		myQuality.calculate(this);
+	}
 	return gnssConverged && insConverged;
 }
 
 // Private support methods
 //
 
-AnalogImageSpaceCoordinate SpatialRessection::applyDistortions(double xi, double eta)
+DetectorSpaceCoordinate SpatialRessection::applyDistortions(double xi, double eta)
 {
 	// Por enquanto estou aplicando todas. Crio a flag depois.
 
-	AnalogImageSpaceCoordinate radial = getRadialDistortions(xi, eta);
-	AnalogImageSpaceCoordinate decentered = getDecenteredDistortions(xi, eta);
-	AnalogImageSpaceCoordinate atmosphere = getAtmosphereDistortions(xi, eta);
-	AnalogImageSpaceCoordinate curvature = getCurvatureDistortions(xi, eta);
+	DetectorSpaceCoordinate radial = getRadialDistortions(xi, eta);
+	DetectorSpaceCoordinate decentered = getDecenteredDistortions(xi, eta);
+	DetectorSpaceCoordinate atmosphere = getAtmosphereDistortions(xi, eta);
+	DetectorSpaceCoordinate curvature = getCurvatureDistortions(xi, eta);
 
 	qDebug("%f %f\n%f %f\n%f %f\n%f %f\n\n",radial.getXi(),radial.getEta(),decentered.getXi(),decentered.getEta(),atmosphere.getXi(),atmosphere.getEta(),curvature.getXi(),curvature.getEta());
 
 	double xiFinal = xi + radial.getXi() + decentered.getXi() + atmosphere.getXi() + curvature.getXi();
 	double etaFinal = eta + radial.getEta() + decentered.getEta() + atmosphere.getEta() + curvature.getEta();
 
-	AnalogImageSpaceCoordinate result(myImage->getId());
+	DetectorSpaceCoordinate result(myImage->getId());
 	result.setXi(xiFinal);
 	result.setEta(etaFinal);
 	result.setAvailable(true);
@@ -812,24 +893,24 @@ AnalogImageSpaceCoordinate SpatialRessection::applyDistortions(double xi, double
 	return result;
 }
 
-AnalogImageSpaceCoordinate SpatialRessection::applyDistortions(AnalogImageSpaceCoordinate myAnalogCoordinate)
+DetectorSpaceCoordinate SpatialRessection::applyDistortions(DetectorSpaceCoordinate myAnalogCoordinate)
 {
 	return applyDistortions(myAnalogCoordinate.getXi(), myAnalogCoordinate.getEta());
 }
 
-AnalogImageSpaceCoordinate SpatialRessection::removeDistortions(double xi, double eta)
+DetectorSpaceCoordinate SpatialRessection::removeDistortions(double xi, double eta)
 {
 	// Por enquanto estou aplicando todas. Crio a flag depois.
 
-	AnalogImageSpaceCoordinate radial = getRadialDistortions(xi, eta);
-	AnalogImageSpaceCoordinate decentered = getDecenteredDistortions(xi, eta);
-	AnalogImageSpaceCoordinate atmosphere = getAtmosphereDistortions(xi, eta);
-	AnalogImageSpaceCoordinate curvature = getCurvatureDistortions(xi, eta);
+	DetectorSpaceCoordinate radial = getRadialDistortions(xi, eta);
+	DetectorSpaceCoordinate decentered = getDecenteredDistortions(xi, eta);
+	DetectorSpaceCoordinate atmosphere = getAtmosphereDistortions(xi, eta);
+	DetectorSpaceCoordinate curvature = getCurvatureDistortions(xi, eta);
 
 	double xiFinal = xi - (radial.getXi() + decentered.getXi() + atmosphere.getXi() + curvature.getXi());
 	double etaFinal = eta - (radial.getEta() + decentered.getEta() + atmosphere.getEta() + curvature.getEta());
 
-	AnalogImageSpaceCoordinate result(myImage->getId());
+	DetectorSpaceCoordinate result(myImage->getId());
 	result.setXi(xiFinal);
 	result.setEta(etaFinal);
 	result.setAvailable(true);
@@ -837,14 +918,14 @@ AnalogImageSpaceCoordinate SpatialRessection::removeDistortions(double xi, doubl
 	return result;
 }
 
-AnalogImageSpaceCoordinate SpatialRessection::removeDistortions(AnalogImageSpaceCoordinate myAnalogCoordinate)
+DetectorSpaceCoordinate SpatialRessection::removeDistortions(DetectorSpaceCoordinate myAnalogCoordinate)
 {
 	return removeDistortions(myAnalogCoordinate.getXi(), myAnalogCoordinate.getEta());
 }
 
-AnalogImageSpaceCoordinate SpatialRessection::getRadialDistortions(double xi, double eta)
+DetectorSpaceCoordinate SpatialRessection::getRadialDistortions(double xi, double eta)
 {
-	AnalogImageSpaceCoordinate result;
+	DetectorSpaceCoordinate result;
 	result.setXi(0.0);
 	result.setEta(0.0);
 	result.setAvailable(true);
@@ -872,9 +953,9 @@ AnalogImageSpaceCoordinate SpatialRessection::getRadialDistortions(double xi, do
 	return result;
 }
 
-AnalogImageSpaceCoordinate SpatialRessection::getDecenteredDistortions(double xi, double eta)
+DetectorSpaceCoordinate SpatialRessection::getDecenteredDistortions(double xi, double eta)
 {
-	AnalogImageSpaceCoordinate result;
+	DetectorSpaceCoordinate result;
 	result.setXi(0.0);
 	result.setEta(0.0);
 	result.setAvailable(true);
@@ -898,9 +979,9 @@ AnalogImageSpaceCoordinate SpatialRessection::getDecenteredDistortions(double xi
 	return result;
 }
 
-AnalogImageSpaceCoordinate SpatialRessection::getAtmosphereDistortions(double xi, double eta)
+DetectorSpaceCoordinate SpatialRessection::getAtmosphereDistortions(double xi, double eta)
 {
-	AnalogImageSpaceCoordinate result;
+	DetectorSpaceCoordinate result;
 	result.setXi(0.0);
 	result.setEta(0.0);
 	result.setAvailable(true);
@@ -914,12 +995,12 @@ AnalogImageSpaceCoordinate SpatialRessection::getAtmosphereDistortions(double xi
 		{
 			double Z0, Zp;
 			/*if (myImage->getEO() != NULL)
-			{
-				Z0 = myImage->getEO()->getXa().get(3,1);
-			}
-			else
-			{*/
-				Z0 = myImage->getFlight()->getScaleDen()*myImage->getSensor()->getFocalDistance()/1000 + terrain->getMeanAltitude();
+   {
+	Z0 = myImage->getEO()->getXa().get(3,1);
+   }
+   else
+   {*/
+			Z0 = myImage->getFlight()->getScaleDen()*myImage->getSensor()->getFocalDistance()/1000 + terrain->getMeanAltitude();
 			/*}*/
 			Zp = terrain->getMeanAltitude();
 
@@ -947,9 +1028,9 @@ AnalogImageSpaceCoordinate SpatialRessection::getAtmosphereDistortions(double xi
 	return result;
 }
 
-AnalogImageSpaceCoordinate SpatialRessection::getCurvatureDistortions(double xi, double eta)
+DetectorSpaceCoordinate SpatialRessection::getCurvatureDistortions(double xi, double eta)
 {
-	AnalogImageSpaceCoordinate result;
+	DetectorSpaceCoordinate result;
 	result.setXi(0.0);
 	result.setEta(0.0);
 	result.setAvailable(true);
@@ -963,12 +1044,12 @@ AnalogImageSpaceCoordinate SpatialRessection::getCurvatureDistortions(double xi,
 		{
 			double Z0;
 			/*if (myImage->getEO() != NULL)
-			{
-				Z0 = myImage->getEO()->getXa().get(3,1);
-			}
-			else
-			{*/
-				Z0 = myImage->getFlight()->getScaleDen()*myImage->getSensor()->getFocalDistance()/1000 + terrain->getMeanAltitude();
+   {
+	Z0 = myImage->getEO()->getXa().get(3,1);
+   }
+   else
+   {*/
+			Z0 = myImage->getFlight()->getScaleDen()*myImage->getSensor()->getFocalDistance()/1000 + terrain->getMeanAltitude();
 			/*}*/
 
 			Z0 /= 1000;
@@ -989,3 +1070,8 @@ AnalogImageSpaceCoordinate SpatialRessection::getCurvatureDistortions(double xi,
 
 	return result;
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

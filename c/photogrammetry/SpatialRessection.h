@@ -1,5 +1,5 @@
 /**************************************************************************
-                        SpatialRessection.h
+	  SpatialRessection.h
 **************************************************************************/
 
 
@@ -10,8 +10,9 @@
 #include "ExteriorOrientation.h"
 #include "Flight.h"
 #include "EOQuality.h"
-#include "DigitalImageSpaceCoordinate.h"
-#include "AnalogImageSpaceCoordinate.h"
+#include "ImageSpaceCoordinate.h"
+#include "DetectorSpaceCoordinate.h"
+#include "RayTester.h"
 
 /**
   * class SpatialRessection
@@ -23,124 +24,139 @@
   * @version 1.2 - Rafael Alves de Aguiar & Irving da Silva Badolato
   */
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 class SpatialRessection : public ExteriorOrientation
 {
-    // Private attributes
-    //
-    Matrix Xa;
-    Matrix La;
-    Matrix A;
-    Matrix P;
-    Matrix X0;
-    Matrix L0;
-    Matrix Lb;
-    Matrix lastL0;
+	// Private attributes
+	//
+	Matrix Xa;
+	Matrix La;
+	Matrix A;
+	Matrix P;
+	Matrix X0;
+	Matrix L0;
+	Matrix Lb;
+	Matrix lastL0;
 
-    double X00; double Y00; double Z00; double omega0; double phi0; double kappa0; // Variables just for speeding up calculations, not really needed.
-    double r11; double r12; double r13; double r21; double r22; double r23; double r31; double r32; double r33; // To make code reading and maintenance easier.
+	RayTester* rt;
+
+	double X00, Y00, Z00, omega0, phi0, kappa0; // Variables just for speeding up calculations, not really needed.
+	//double r11, r12, r13, r21, r22, r23, r31, r32, r33; // To make code reading and maintenance easier.
     deque<int> selectedPoints;
+    bool flightDirectionAvailable;
     bool pointForFlightDirectionAvailable;
-    DigitalImageSpaceCoordinate pointForFlightDirection;
+    ImageSpaceCoordinate pointForFlightDirection;
 
-    int totalIterations;
-        bool gnssConverged; bool insConverged;
+	int totalIterations;
+	bool gnssConverged, insConverged;
 	bool useDistortions;
 
-    // Composed objects
-    //
-    EOQuality myQuality;
+	// Composed objects
+	//
+	EOQuality myQuality;
 
-    // Sets probably accessible only by the Mounter class.
-    //
-    void setXa(const Matrix& newXa);
-    void setLa(const Matrix& newLa);
-    void setA(const Matrix& newA);
-    void setP(const Matrix& newP);
-    void setX0(const Matrix& newX0);
-    void setL0(const Matrix& newL0);
-    void setLb(const Matrix& newLb);
+	// Sets probably accessible only by the Mounter class.
+	//
+	void setXa(const Matrix& newXa);
+	void setLa(const Matrix& newLa);
+	void setA(const Matrix& newA);
+	void setP(const Matrix& newP);
+	void setX0(const Matrix& newX0);
+	void setL0(const Matrix& newL0);
+	void setLb(const Matrix& newLb);
 
 public:
 
-    // Constructors and destructors
-    //
-    SpatialRessection();
-    SpatialRessection(int myImageId); // Constructor with ids only, needed in project use.
-    virtual ~SpatialRessection();
+	// Constructors and destructors
+	//
+	SpatialRessection();
+	SpatialRessection(int myImageId); // Constructor with ids only, needed in project use.
+	virtual ~SpatialRessection();
 
-    // Private attribute accessors
-    //
-    Matrix getXa();
-    Matrix getLa();
-    Matrix getA();
-    Matrix getP();
-    Matrix getX0();
-    Matrix getL0();
-    Matrix getLb();
-    Matrix getLastL0();
+	// Private attribute accessors
+	//
+	Matrix getXa();
+	Matrix getLa();
+	Matrix getA();
+	Matrix getP();
+	Matrix getX0();
+	Matrix getL0();
+	Matrix getLb();
+	Matrix getLastL0();
 
-    deque<int> getSelectedPoints();
-    DigitalImageSpaceCoordinate* getPointForFlightDirection();
+	deque<int> getSelectedPoints();
+	ImageSpaceCoordinate* getPointForFlightDirection();
 
 	int getTotalIterations();
 	bool getConverged();
 	bool getGnssConverged();
 	bool getInsConverged();
 
-    // Composed object accessors
-    //
-    void setQuality(EOQuality newQuality);
-    EOQuality getQuality();
+	// Composed object accessors
+	//
+	void setQuality(EOQuality newQuality);
+	EOQuality getQuality();
 
-    // Selected points list manipulators
-    //
-    void selectPoint(int id);
-    void unselectPoint(int id);
-    void unselectAllPoints();
-    int countSelectedPoints();
+	// Selected points list manipulators
+	//
+	void selectPoint(int id);
+	void unselectPoint(int id);
+	void unselectAllPoints();
+	int countSelectedPoints();
 
-    //  Selected fiductial mark or point to indicate the direction of flight manipulators
-    //
-    void setPointForFlightDirection(int col, int row);
-    void selectFiductialMarkForFlightDirection(int id);
-    void unsetPointForFlightDirection();
+	//  Selected fiducial mark or point to indicate the direction of flight manipulators
+	//
+		void setFlightDirection(double kappa0);
+		void setPointForFlightDirection(double col, double row);
+	void selectFiducialMarkForFlightDirection(int id);
+	void unsetPointForFlightDirection();
 
-    // EObject methods
-    //
-    string objectType(void);
-    string objectAssociations(void);
-    bool is(string s);
+	// EObject methods
+	//
+	string objectType(void);
+	string objectAssociations(void);
+	bool is(string s);
 
-    // XML methods
-    //
+	// XML methods
+	//
     void xmlSetData(string xml);
     string xmlGetData();
+    string xmlGetDataEO();
 
-    // Other methods
-    //
-    void generateR();
-    void generateInitialA();
-    void generateInitialL0();
-    void generateInitialP();
-    void generateA();
-    void generateL0();
-    void generateLb();
-    void generateP();
-    void generateX0();
-    void initialize();
+	// Other methods
+	//
+	//void generateR();
+	void generateInitialA();
+	void generateInitialL0();
+	void generateInitialP();
+	void generateA();
+	void generateL0();
+	void generateLb();
+	void generateP();
+	void generateX0();
+	void initialize();
 	bool calculate(int maxIterations, double gnssPrecision, double insPrecision);
 
 	// Private support methods
 	//
-	AnalogImageSpaceCoordinate applyDistortions(double xi, double eta);
-	AnalogImageSpaceCoordinate applyDistortions(AnalogImageSpaceCoordinate myAnalogCoordinate);
-	AnalogImageSpaceCoordinate removeDistortions(double xi, double eta);
-	AnalogImageSpaceCoordinate removeDistortions(AnalogImageSpaceCoordinate myAnalogCoordinate);
-	AnalogImageSpaceCoordinate getRadialDistortions(double xi, double eta);
-	AnalogImageSpaceCoordinate getDecenteredDistortions(double xi, double eta);
-	AnalogImageSpaceCoordinate getAtmosphereDistortions(double xi, double eta);
-	AnalogImageSpaceCoordinate getCurvatureDistortions(double xi, double eta);
+	DetectorSpaceCoordinate applyDistortions(double xi, double eta);
+	DetectorSpaceCoordinate applyDistortions(DetectorSpaceCoordinate myAnalogCoordinate);
+	DetectorSpaceCoordinate removeDistortions(double xi, double eta);
+	DetectorSpaceCoordinate removeDistortions(DetectorSpaceCoordinate myAnalogCoordinate);
+	DetectorSpaceCoordinate getRadialDistortions(double xi, double eta);
+	DetectorSpaceCoordinate getDecenteredDistortions(double xi, double eta);
+	DetectorSpaceCoordinate getAtmosphereDistortions(double xi, double eta);
+	DetectorSpaceCoordinate getCurvatureDistortions(double xi, double eta);
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif //SPATIALRESSECTION_H

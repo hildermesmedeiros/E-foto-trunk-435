@@ -1,17 +1,22 @@
 /*******************************************************************************
-								FrameSensor.h
+		FrameSensor.h
 *******************************************************************************/
 
 #ifndef FRAMESENSOR_H
 #define FRAMESENSOR_H
 
 #include "Sensor.h"
-#include "AnalogImageSpaceCoordinate.h"
+#include "DetectorSpaceCoordinate.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 class SensorWithFiducialMarks;
 class SensorWithKnowDimensions;
 class SensorWithKnowParameters;
-//class AnalogImageSpaceCoordinate;
+//class DetectorSpaceCoordinate;
 
 // Classes/Structs used in FrameSensor only.
 //
@@ -74,7 +79,7 @@ protected:
 	//string sensorId;
 	double focalDistance;
 	double focalDistanceSigma;
-	AnalogImageSpaceCoordinate principalPointCoordinates; // Isso tem que virar um tipo próprio.
+	DetectorSpaceCoordinate principalPointCoordinates; // Isso tem que virar um tipo próprio.
 	//string description;
 	//string geometry;
 	//string detector;
@@ -108,13 +113,13 @@ public:
 	//void setId(int newId);
 	void setFocalDistance(double newFocalDistance);
 	void setFocalDistanceSigma(double newFocalDistanceSigma);
-	void setPrincipalPointCoordinates(AnalogImageSpaceCoordinate newCoordinates);
+	void setPrincipalPointCoordinates(DetectorSpaceCoordinate newCoordinates);
 	//void setDescription(string newDescription);
 	//int getId();
 	double getFocalDistance();
 	double getFocalDistanceSigma();
-	AnalogImageSpaceCoordinate getPrincipalPointCoordinates();
-	//string getDescription();	
+	DetectorSpaceCoordinate getPrincipalPointCoordinates();
+	//string getDescription();
 	deque<RadialSymmetricDistortionCoefficient> getRadialSymmetricCoefficients();
 	deque<DecenteredDistortionCoefficient> getDecenteredCoefficients();
 
@@ -134,5 +139,10 @@ public:
 	virtual string objectType(void);
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // FRAMESENSOR_H

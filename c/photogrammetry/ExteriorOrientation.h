@@ -1,5 +1,5 @@
 /**************************************************************************
-                        ExteriorOrientation.h
+	  ExteriorOrientation.h
 **************************************************************************/
 
 
@@ -7,6 +7,11 @@
 #define EXTERIORORIENTATION_H
 
 #include "EObject.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 class Image;
 
@@ -22,29 +27,34 @@ class Image;
 
 class ExteriorOrientation : public EObject
 {
-    //EOBJECT
+	//EOBJECT
 
 protected:
 
-    // Associated objects
-    //
-    int imageId;
-    Image* myImage;
+	// Associated objects
+	//
+	int imageId;
+	Image* myImage;
 
 public:
 
-    // Associated objects accessor methods
-    //
-    void setImageId(int newImageId);
-    void setImage(Image* newImage);
-    int getImageId();
-    Image* getImage();
+	// Associated objects accessor methods
+	//
+	void setImageId(int newImageId);
+	void setImage(Image* newImage);
+	int getImageId();
+	Image* getImage();
 
-    // EObject methods
-    //
-    string objectType(void);
-    string objectAssociations(void);
+	// EObject methods
+	//
+	string objectType(void);
+	string objectAssociations(void);
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif //EXTERIORORIENTATION_H

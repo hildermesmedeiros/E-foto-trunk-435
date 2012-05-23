@@ -1,8 +1,3 @@
-/*******************************************************************************
-                        Coordinate.h
-*******************************************************************************/
-
-
 #ifndef COORDINATE_H
 #define COORDINATE_H
 
@@ -10,55 +5,81 @@
 #include "PositionMatrix.h"
 #include "Matrix.h"
 
-/******************************* Abstract Class ********************************
-Coordinate does not have any pure virtual methods, but its author
-  defined it as an abstract class, so you should not use it directly.
-  Inherit from it instead and create only objects from the derived classes
-*******************************************************************************/
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 /**
-* class Coordinate
-*
-* @author E-Foto group
-*
-* * * * * * * * * * * *
-* @date 06/05/2009
-* @version 1.2 - Rafael Alves de Aguiar & Irving da Silva Badolato.
+* \file Coordinate.h
+* \class Coordinate
+* \brief Base para as classes de coordenadas
+* \abstract A classe de Coordenadas foi definida como uma classe abstrata, então você não deve usá-la diretamente.
+* \attention Construa apenas objetos das classes derivadas.
+* \copyright E-Foto group
+* \authors Rafael Aguiar & Irving Badolato
 */
-
 class Coordinate : public EObject
 {
-    //EOBJECT
 
 protected:
-    // Protected attributes
-    //
-    bool available;
-    bool sigmaAvailable;
+	bool available;
+	bool sigmaAvailable;
 
 public:
 
-    // Constructors and Destructors
-    //
-    virtual ~Coordinate();
+	/**
+ * \brief Destrutor virtual padrão.
+ */
+	virtual ~Coordinate();
 
-    // EObject methods
-    //
-    string objectType(void);
+	/**
+ * \brief Método para alterar o valor que diz se a coordenada é válida.
+ * \param value	Valor verdadeiro ou falso para o julgamento sobre a validade da coordenada.
+ */
+	void setAvailable(bool value);
 
-    // Private attribute accessors
-    //
-    void setAvailable(bool value);
-    void setSigmaAvailable(bool value);
-    bool isAvailable();
-    bool isSigmaAvailable();
+	/**
+ * \brief Método para alterar o valor que diz se o erro (sigma) armazenado pela coordenada é válido.
+ * \param value	Valor verdadeiro ou falso para o julgamento sobre a validade do erro armazenado pela classe de coordenada.
+ */
+	void setSigmaAvailable(bool value);
 
-    // Other methods
-    //
-    virtual PositionMatrix getPosition() = 0;
-    virtual string getGmlPos();
-    virtual void setPosition(const PositionMatrix& newPosition) = 0;
+	/**
+ * \brief Método para informar se a coordenada possui um valor válido.
+ * \return PositionMatrix	Retorna verdadeiro se existir um valor válido armazenado para a coordenada e falso em caso contrário.
+ */
+	bool isAvailable();
+
+	/**
+ * \brief Método para informar se uma coordenada possui um erro sigma conhecido.
+ * \return bool	Retorna verdadeiro se existir um erro sigma conhecido para aquela coordenada e falso em caso contrário.
+ */
+	bool isSigmaAvailable();
+
+	/**
+ * \brief Método para retornar a coordenada em uma matriz coluna.
+ * \return PositionMatrix	Matriz coluna com os valores de posicionamento da coordenada.
+ */
+	virtual PositionMatrix getPosition() = 0;
+
+	/**
+ * \brief Método para retornar a coordenada em formato GML (Geography Markup Language).
+ * \return string	Coordenada em formato GML.
+ */
+	virtual string getGmlPos();
+
+	/**
+ * \brief Método para alterar a posição de uma coordenada.
+ * \param newPosition	Matriz coluna com os valores de posicionamento da nova coordenada.
+ */
+	virtual void setPosition(const PositionMatrix& newPosition) = 0;
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // COORDINATE_H

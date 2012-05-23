@@ -1,4 +1,11 @@
 #include "ImagesForm.h"
+#include <QPicture>
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 ImagesForm :: ImagesForm(QWidget *parent) : AbstractForm(parent)
 {
 	setupUi(this);
@@ -7,6 +14,7 @@ ImagesForm :: ImagesForm(QWidget *parent) : AbstractForm(parent)
 	imagesTable->setColumnWidth(1,80);
 	imagesTable->setColumnWidth(2,30);
 	imagesTable->setColumnWidth(3,30);
+
 }
 
 void ImagesForm::fillvalues(string values)
@@ -71,24 +79,43 @@ void ImagesForm::setIOsAvailable(string xmlIOs)
 {
 	EDomElement ede(xmlIOs);
 
-	for (int i=0;i<imagesTable->rowCount();i++){
+	for (int i=0;i<imagesTable->rowCount();i++)
+	{
 		int key = imagesTable->item(i,0)->text().toInt();
-				EDomElement IOXml = ede.elementByTagAtt("imageIO","image_key",Conversion::intToString(key));
+		EDomElement IOXml = ede.elementByTagAtt("imageIO","image_key",Conversion::intToString(key));
 		QTableWidgetItem *IOItem = new QTableWidgetItem();
-		IOItem->setTextAlignment(Qt::AlignHCenter);
+		IOItem->setTextAlignment(Qt::AlignCenter);
+
+		QLabel *label=new QLabel();
+		label->setAlignment(Qt::AlignCenter);
+		//QLabel *unchecked= new QLabel();
+
+		//checked->setPixmap(QPixmap(":/image/checked.png"));
+		//unchecked->setPixmap(QPixmap(":/image/unchecked.png"));
 		if(IOXml.getContent() != "")
 		{
+			label->setPixmap(QPixmap(":/image/checked.png"));
+
+
+			//IOItem->setIcon(QIcon(":/image/checked.png"));
+			/*
 			IOItem->setTextColor(QColor("green"));
 			IOItem->setText(QString::fromUtf8("✓"));
 			IOItem->setFont(QFont("Sans",20,QFont::Bold));
+			*/
 		}
 		else
 		{
-			IOItem->setTextColor(QColor("red"));
-			IOItem->setText("x");
-			IOItem->setFont(QFont("Sans",20));
+			label->setPixmap(QPixmap(":/image/unchecked.png"));
+			//IOItem->setIcon(QIcon(":/image/unchecked.png"));
+			/*
+   IOItem->setTextColor(QColor("red"));
+   IOItem->setText("x");
+   IOItem->setFont(QFont("Sans",20));
+			*/
 		}
-		imagesTable->setItem(i,2,IOItem);
+		imagesTable->setCellWidget(i,2,label);
+		//imagesTable->setItem(i,2,IOItem);
 	}
 }
 
@@ -96,23 +123,43 @@ void ImagesForm::setEOsAvailable(string xmlEOs)
 {
 	EDomElement ede(xmlEOs);
 
-	for (int i=0;i<imagesTable->rowCount();i++){
+	for (int i=0;i<imagesTable->rowCount();i++)
+	{
 		int key = imagesTable->item(i,0)->text().toInt();
-				EDomElement EOXml = ede.elementByTagAtt("imageEO","image_key",Conversion::intToString(key));
+		EDomElement EOXml = ede.elementByTagAtt("imageEO","image_key",Conversion::intToString(key));
 		QTableWidgetItem *EOItem = new QTableWidgetItem();
-		EOItem->setTextAlignment(Qt::AlignHCenter);
+		EOItem->setTextAlignment(Qt::AlignCenter);
+
+		QLabel *label=new QLabel();
+		label->setAlignment(Qt::AlignCenter);
 		if(EOXml.getContent() != "")
 		{
-			EOItem->setTextColor(QColor("green"));
-			EOItem->setText(QString::fromUtf8("✓"));
-			EOItem->setFont(QFont("Sans",20,QFont::Bold));
+			label->setPixmap(QPixmap(":/image/checked.png"));
+
+			//EOItem->setIcon(QIcon(":/image/checked.png"));
+			/*
+   EOItem->setTextColor(QColor("green"));
+   EOItem->setText(QString::fromUtf8("✓"));
+   EOItem->setFont(QFont("Sans",20,QFont::Bold));
+			*/
 		}
 		else
 		{
-			EOItem->setTextColor(QColor("red"));
-			EOItem->setText("x");
-			EOItem->setFont(QFont("Sans",20));
+			label->setPixmap(QPixmap(":/image/unchecked.png"));
+
+			//EOItem->setIcon(QIcon(":/image/unchecked.png"));
+			/*
+   EOItem->setTextColor(QColor("red"));
+   EOItem->setText("x");
+   EOItem->setFont(QFont("Sans",20));
+			*/
 		}
-		imagesTable->setItem(i,3,EOItem);
+		imagesTable->setCellWidget(i,3,label);
+		//imagesTable->setItem(i,3,EOItem);
 	}
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

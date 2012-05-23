@@ -3,35 +3,34 @@
 
 #include "XMLSensor.h"
 #include "EObject.h"
-#include "AnalogFiductialMark.h"
 /*
 class XMLAerial:XMLSensor
 {
 
-    virtual void setLb(const Matrix& newLb);
-    virtual void setLb(const Matrix& newLb, const Matrix& newSigmaLb);
-    virtual Matrix getLb();
-    virtual Matrix getSigmaLb();
-    virtual void setAnaFidMarks(deque<AnalogFiductialMark> newAnaFidMarks);
-    virtual deque<AnalogFiductialMark> Aerial::getAnaFidMarks();
-    virtual voidputAnaFidMark(AnalogFiductialMark newAnaFidMark);
-    virtual AnalogFiductialMark Aerial::getAnaFidMark(int id);
-    virtual AnalogFiductialMark Aerial::getAnaFidMarkAt(unsigned int index);
-    virtual int countAnaFidMarks();
-    virtual void deleteAnaFidMark(int id);
-    virtual void deleteAnaFidMarkAt(unsigned int index);
-    virtual void clearAnaFidMarks();
-    virtual string objectType(void);
-    virtual string objectAssociations(void);
-    virtual bool is(string s);
+	virtual void setLb(const Matrix& newLb);
+	virtual void setLb(const Matrix& newLb, const Matrix& newSigmaLb);
+	virtual Matrix getLb();
+	virtual Matrix getSigmaLb();
+	virtual void setAnaFidMarks(deque<AnalogFiducialMark> newAnaFidMarks);
+	virtual deque<AnalogFiducialMark> Aerial::getAnaFidMarks();
+	virtual voidputAnaFidMark(AnalogFiducialMark newAnaFidMark);
+	virtual AnalogFiducialMark Aerial::getAnaFidMark(int id);
+	virtual AnalogFiducialMark Aerial::getAnaFidMarkAt(unsigned int index);
+	virtual int countAnaFidMarks();
+	virtual void deleteAnaFidMark(int id);
+	virtual void deleteAnaFidMarkAt(unsigned int index);
+	virtual void clearAnaFidMarks();
+	virtual string objectType(void);
+	virtual string objectAssociations(void);
+	virtual bool is(string s);
 
 
 public:
-    XMLAerial();
+	XMLAerial();
 
-    //XML Methods
-    void xmlSetData(string xml);
-    string xmlGetData();
+	//XML Methods
+	void xmlSetData(string xml);
+	string xmlGetData();
 };
 */
 #endif // XMLAERIAL_H

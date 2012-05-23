@@ -1,16 +1,21 @@
 /**************************************************************************
-                        ExteriorOrientation.cpp
+	  ExteriorOrientation.cpp
 **************************************************************************/
 
 #include "ExteriorOrientation.h"
 #include "Image.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 // Associated object accessor methods
 //
 
 void ExteriorOrientation::setImageId(int newImageId)
 {
-    imageId = newImageId;
+	imageId = newImageId;
 }
 
 /**
@@ -19,13 +24,13 @@ void ExteriorOrientation::setImageId(int newImageId)
  */
 void ExteriorOrientation::setImage(Image* newImage)
 {
-    myImage = newImage;
+	myImage = newImage;
 }
 
 
 int ExteriorOrientation::getImageId()
 {
-    return imageId;
+	return imageId;
 }
 
 /**
@@ -34,7 +39,7 @@ int ExteriorOrientation::getImageId()
  */
 Image* ExteriorOrientation::getImage()
 {
-    return myImage;
+	return myImage;
 }
 
 // EObject methods
@@ -45,9 +50,9 @@ Image* ExteriorOrientation::getImage()
  */
 string ExteriorOrientation::objectType(void)
 {
-    stringstream result;
-    result << "ExteriorOrientation " << imageId;
-    return result.str();
+	stringstream result;
+	result << "ExteriorOrientation " << imageId;
+	return result.str();
 }
 
 /**
@@ -55,6 +60,10 @@ string ExteriorOrientation::objectType(void)
  */
 string ExteriorOrientation::objectAssociations(void)
 {
-    return myImage->objectType();
+	return myImage->objectType();
 }
 
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

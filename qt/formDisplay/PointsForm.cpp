@@ -3,6 +3,11 @@
 #include <QFile>
 #include <QString>
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 PointsForm :: PointsForm(QWidget *parent) : AbstractForm(parent)
 {
 	setupUi(this);
@@ -15,7 +20,7 @@ PointsForm :: PointsForm(QWidget *parent) : AbstractForm(parent)
 
 void PointsForm::fillvalues(string values)
 {
-   EDomElement ede(values);
+	EDomElement ede(values);
 	int rows=ede.children().size();
 	pointsTable->setRowCount(rows);
 	pointsTable->setColumnCount(6);
@@ -69,6 +74,11 @@ void PointsForm :: emitSignal(int i)
 
 bool PointsForm::isForm(string formName)
 {
-		return !formName.compare("PointsForm");
+	return !formName.compare("PointsForm");
 }
 
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

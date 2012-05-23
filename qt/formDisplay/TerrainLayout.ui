@@ -115,13 +115,16 @@ p, li { white-space: pre-wrap; }
         </item>
         <item row="2" column="4">
          <widget class="QSpinBox" name="utmFuseSpin">
+          <property name="specialValueText">
+           <string/>
+          </property>
           <property name="maximum">
            <number>60</number>
           </property>
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="EfotoDoubleSpinBox" name="meanAltSpinBox">
+         <widget class="br::uerj::eng::efoto::EfotoDoubleSpinBox" name="meanAltSpinBox">
           <property name="toolTip">
            <string>Mean Altitude Above Sea Level</string>
           </property>
@@ -175,7 +178,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="EfotoDoubleSpinBox" name="maxAltSpinBox">
+         <widget class="br::uerj::eng::efoto::EfotoDoubleSpinBox" name="maxAltSpinBox">
           <property name="toolTip">
            <string>Max Altitude Above Sea Level</string>
           </property>
@@ -197,7 +200,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="EfotoDoubleSpinBox" name="minAltSpinBox">
+         <widget class="br::uerj::eng::efoto::EfotoDoubleSpinBox" name="minAltSpinBox">
           <property name="toolTip">
            <string>Min Altitude Above Sea Level</string>
           </property>
@@ -254,7 +257,7 @@ p, li { white-space: pre-wrap; }
          </size>
         </property>
         <property name="title">
-         <string>Work Area Center Coordinates</string>
+         <string>Approximate geographic coordinates of center project area</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -275,7 +278,7 @@ p, li { white-space: pre-wrap; }
                <enum>QLayout::SetMaximumSize</enum>
               </property>
               <item>
-               <widget class="DmsEdit" name="latDmsEdit">
+               <widget class="br::uerj::eng::efoto::DmsEdit" name="latDmsEdit">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -364,7 +367,7 @@ p, li { white-space: pre-wrap; }
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
-               <widget class="DmsEdit" name="longDmsEdit">
+               <widget class="br::uerj::eng::efoto::DmsEdit" name="longDmsEdit">
                 <property name="maximumSize">
                  <size>
                   <width>323</width>
@@ -446,12 +449,12 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>EfotoDoubleSpinBox</class>
+   <class>br::uerj::eng::efoto::EfotoDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>EfotoDoubleSpinBox.h</header>
   </customwidget>
   <customwidget>
-   <class>DmsEdit</class>
+   <class>br::uerj::eng::efoto::DmsEdit</class>
    <extends>QLineEdit</extends>
    <header>DmsEdit.h</header>
   </customwidget>

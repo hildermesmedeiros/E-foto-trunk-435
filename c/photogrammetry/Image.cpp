@@ -1,11 +1,16 @@
 /*******************************************************************************
-                              Image.cpp
+		 Image.cpp
 *******************************************************************************/
 
 #include "Image.h"
 #include "Point.h"
 #include "SensorWithFiducialMarks.h"
 #include "Flight.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 // Constructors and destructors
 
@@ -22,8 +27,9 @@ Image::Image()
  */
 Image::Image(int myId, int mySensorId)
 {
-    id = myId;
-    sensorId = mySensorId;
+	id = myId;
+	sensorId = mySensorId;
+    flightDirection = 3*M_PI;
 }
 
 /**
@@ -43,7 +49,7 @@ Image::~Image()
  */
 void Image::setId(int newId)
 {
-    id = newId;
+	id = newId;
 }
 
 /**
@@ -52,7 +58,7 @@ void Image::setId(int newId)
  */
 void Image::setSensorId(int newSensorId)
 {
-    sensorId = newSensorId;
+	sensorId = newSensorId;
 }
 
 /**
@@ -61,7 +67,7 @@ void Image::setSensorId(int newSensorId)
  */
 void Image::setFlightId(int newFlightId)
 {
-    flightId = newFlightId;
+	flightId = newFlightId;
 }
 
 /**
@@ -70,7 +76,7 @@ void Image::setFlightId(int newFlightId)
  */
 void Image::setResolution(unsigned int newResolution)
 {
-    resolution = newResolution;
+	resolution = newResolution;
 }
 
 /**
@@ -79,7 +85,7 @@ void Image::setResolution(unsigned int newResolution)
  */
 void Image::setResolutionUnit(string newResolutionUnit)
 {
-    resolutionUnit = newResolutionUnit;
+	resolutionUnit = newResolutionUnit;
 }
 
 /**
@@ -88,7 +94,7 @@ void Image::setResolutionUnit(string newResolutionUnit)
  */
 void Image::setWidth(unsigned int newWidth)
 {
-    width = newWidth;
+	width = newWidth;
 }
 
 /**
@@ -97,7 +103,7 @@ void Image::setWidth(unsigned int newWidth)
  */
 void Image::setHeight(unsigned int newHeight)
 {
-    height = newHeight;
+	height = newHeight;
 }
 
 /**
@@ -106,7 +112,7 @@ void Image::setHeight(unsigned int newHeight)
  */
 void Image::setFilename(string newFilename)
 {
-    filename = newFilename;
+	filename = newFilename;
 }
 
 /**
@@ -115,7 +121,16 @@ void Image::setFilename(string newFilename)
  */
 void Image::setFilepath(string newFilepath)
 {
-    filepath = newFilepath;
+	filepath = newFilepath;
+}
+
+/**
+ * Set the value of flightDirection
+ * @param radianAngle the new value of flightDirection
+ */
+void Image::setFlightDirection(double radianAngle)
+{
+	flightDirection=radianAngle;
 }
 
 /**
@@ -124,7 +139,7 @@ void Image::setFilepath(string newFilepath)
  */
 int Image::getId()
 {
-    return id;
+	return id;
 }
 
 /**
@@ -133,7 +148,7 @@ int Image::getId()
  */
 int Image::getSensorId()
 {
-    return sensorId;
+	return sensorId;
 }
 
 /**
@@ -142,7 +157,7 @@ int Image::getSensorId()
  */
 int Image::getFlightId()
 {
-    return flightId;
+	return flightId;
 }
 
 /**
@@ -151,7 +166,7 @@ int Image::getFlightId()
  */
 unsigned int Image::getResolution()
 {
-    return resolution;
+	return resolution;
 }
 
 /**
@@ -160,7 +175,7 @@ unsigned int Image::getResolution()
  */
 string Image::getResolutionUnit()
 {
-    return resolutionUnit;
+	return resolutionUnit;
 }
 
 /**
@@ -169,7 +184,7 @@ string Image::getResolutionUnit()
  */
 unsigned int Image::getWidth()
 {
-    return width;
+	return width;
 }
 
 /**
@@ -178,7 +193,7 @@ unsigned int Image::getWidth()
  */
 unsigned int Image::getHeight()
 {
-    return height;
+	return height;
 }
 
 /**
@@ -187,7 +202,7 @@ unsigned int Image::getHeight()
  */
 string Image::getFilename()
 {
-    return filename;
+	return filename;
 }
 
 /**
@@ -196,7 +211,26 @@ string Image::getFilename()
  */
 string Image::getFilepath()
 {
-    return filepath;
+	return filepath;
+}
+/**
+  * Get the value of flightDirection
+  * @return the value of flightDirection
+  */
+double Image::getFlightDirection()
+{
+	return flightDirection;
+}
+
+
+
+/**
+ * Get the value of image ID
+ * @return the value of image ID
+ */
+string Image::getImageId()
+{
+	return imageId;
 }
 
 bool Image::isGnssAvailable()
@@ -257,73 +291,73 @@ string Image::getInsType()
  * Set all the values of digFidMarks deque at once
  * @param newDigFidMarks a deque with the new values
  */
-void Image::setDigFidMarks(deque<DigitalFiductialMark> newDigFidMarks)
+void Image::setDigFidMarks(deque<ImageFiducialMark> newDigFidMarks)
 {
-    digFidMarks = newDigFidMarks;
+	digFidMarks = newDigFidMarks;
 }
 
 /**
  * Get all the values of digFidMarks deque at once
  * @return a deque the values of digFidMarks
  */
-deque<DigitalFiductialMark> Image::getDigFidMarks()
+deque<ImageFiducialMark> Image::getDigFidMarks()
 {
-    return digFidMarks;
+	return digFidMarks;
 }
 
 /**
  * Add one value to digFidMarks deque
  * @param newDigFidMark the value to be added
  */
-void Image::putDigFidMark(DigitalFiductialMark newDigFidMark)
+void Image::putDigFidMark(ImageFiducialMark newDigFidMark)
 {
-    if (digFidMarks.empty())
-    {
-        digFidMarks.push_back(newDigFidMark);
-    }
-    else
-    {
-        if (digFidMarks.back().getId() < newDigFidMark.getId())
-        {
-            digFidMarks.push_back(newDigFidMark);
-        }
-        else
-        {
-            for (unsigned int i = 0; i < digFidMarks.size(); i++)
-            {
-                if (digFidMarks.at(i).getId() > newDigFidMark.getId())
-                {
-                    digFidMarks.insert(digFidMarks.begin()+i,newDigFidMark);
-                    break;
-                }
-            }
-        }
-    }
+	if (digFidMarks.empty())
+	{
+		digFidMarks.push_back(newDigFidMark);
+	}
+	else
+	{
+		if (digFidMarks.back().getId() < newDigFidMark.getId())
+		{
+			digFidMarks.push_back(newDigFidMark);
+		}
+		else
+		{
+			for (unsigned int i = 0; i < digFidMarks.size(); i++)
+			{
+				if (digFidMarks.at(i).getId() > newDigFidMark.getId())
+				{
+					digFidMarks.insert(digFidMarks.begin()+i,newDigFidMark);
+					break;
+				}
+			}
+		}
+	}
 }
 
 /**
  * Get one value from digFidMarks deque
  * @param index the position of the value
- * @return the value of the DigitalFiductialMark
+ * @return the value of the ImageFiducialMark
  */
-DigitalFiductialMark Image::getDigFidMark(int id)
+ImageFiducialMark Image::getDigFidMark(int id)
 {
-    for (unsigned int i = 0; i < digFidMarks.size(); i++)
-	if (digFidMarks.at(i).getId() == id)
-            return digFidMarks.at(i);
-    return DigitalFiductialMark();
+	for (unsigned int i = 0; i < digFidMarks.size(); i++)
+		if (digFidMarks.at(i).getId() == id)
+			return digFidMarks.at(i);
+	return ImageFiducialMark();
 }
 
 /**
  * Get one value from digFidMarks deque
  * @param index the position of the value
- * @return the value of the DigitalFiductialMark
+ * @return the value of the ImageFiducialMark
  */
-DigitalFiductialMark Image::getDigFidMarkAt(unsigned int index)
+ImageFiducialMark Image::getDigFidMarkAt(unsigned int index)
 {
-    if (index < digFidMarks.size())
-        return digFidMarks.at(index);
-    return DigitalFiductialMark();
+	if (index < digFidMarks.size())
+		return digFidMarks.at(index);
+	return ImageFiducialMark();
 }
 
 /**
@@ -332,7 +366,7 @@ DigitalFiductialMark Image::getDigFidMarkAt(unsigned int index)
  */
 int Image::countDigFidMarks()
 {
-    return digFidMarks.size();
+	return digFidMarks.size();
 }
 
 /**
@@ -341,9 +375,9 @@ int Image::countDigFidMarks()
  */
 void Image::deleteDigFidMark(int id)
 {
-    for (unsigned int i = 0; i < digFidMarks.size(); i++)
-        if (digFidMarks.at(i).getId() == id)
-            digFidMarks.erase(digFidMarks.begin()+i);
+	for (unsigned int i = 0; i < digFidMarks.size(); i++)
+		if (digFidMarks.at(i).getId() == id)
+			digFidMarks.erase(digFidMarks.begin()+i);
 }
 
 /**
@@ -352,8 +386,8 @@ void Image::deleteDigFidMark(int id)
  */
 void Image::deleteDigFidMarkAt(unsigned int index)
 {
-    if (index < digFidMarks.size())
-        digFidMarks.erase(digFidMarks.begin()+index);
+	if (index < digFidMarks.size())
+		digFidMarks.erase(digFidMarks.begin()+index);
 }
 
 /**
@@ -361,7 +395,7 @@ void Image::deleteDigFidMarkAt(unsigned int index)
  */
 void Image::clearDigFidMarks()
 {
-    digFidMarks.clear();
+	digFidMarks.clear();
 }
 
 
@@ -369,72 +403,72 @@ void Image::clearDigFidMarks()
 //
 void Image::setSensor(Sensor* newSensor)
 {
-    mySensor = newSensor;
+	mySensor = newSensor;
 }
 
 Sensor* Image::getSensor()
 {
-    return mySensor;
+	return mySensor;
 }
 
 void Image::setFlight(Flight* newFlight)
 {
-    myFlight = newFlight;
+	myFlight = newFlight;
 }
 
 Flight* Image::getFlight()
 {
-    return myFlight;
+	return myFlight;
 }
 
 void Image::setIO(InteriorOrientation* newIO)
 {
-    myIO = newIO;
+	myIO = newIO;
 }
 
 InteriorOrientation* Image::getIO()
 {
-    return myIO;
+	return myIO;
 }
 
 void Image::setEO(SpatialRessection* newEO)
 {
-    myEO = newEO;
+	myEO = newEO;
 }
 
 SpatialRessection* Image::getEO()
 {
-    return myEO;
+	return myEO;
 }
 
 void Image::putPoint(Point* newPointAssociation)
 {
-    bool insert = true;
-    for (unsigned int i = 0; i < myPoints.size(); i++)
-        if (myPoints.at(i) == newPointAssociation)
-            insert = false;
-    if (insert)
-        myPoints.push_back(newPointAssociation);
+	bool insert = true;
+	for (unsigned int i = 0; i < myPoints.size(); i++)
+		if (myPoints.at(i) == newPointAssociation)
+			insert = false;
+	if (insert)
+		myPoints.push_back(newPointAssociation);
 }
 
 Point* Image::getPoint(int pointId)
 {
-    for (unsigned int i = 0; i < myPoints.size(); i++)
-	if (myPoints.at(i)->getId() == pointId)
-            return myPoints.at(i);
-    return NULL;
+	for (unsigned int i = 0; i < myPoints.size(); i++)
+		if (myPoints.at(i)->getId() == pointId)
+			return myPoints.at(i);
+	return NULL;
 }
 
 int Image::countPoints()
 {
-    return myPoints.size();
+	return myPoints.size();
 }
 
 Point* Image::getPointAt(unsigned int index)
 {
-    if (index < myPoints.size())
-        return myPoints.at(index);
-    return NULL;
+	if (index < myPoints.size())
+		return myPoints.at(index);
+	return NULL;
 }
 
 // EObject methods
@@ -445,9 +479,9 @@ Point* Image::getPointAt(unsigned int index)
  */
 string Image::objectType(void)
 {
-    stringstream result;
-    result << "Image " << id;
-    return result.str();
+	stringstream result;
+	result << "Image " << id;
+	return result.str();
 }
 
 /**
@@ -455,9 +489,9 @@ string Image::objectType(void)
  */
 string Image::objectAssociations(void)
 {
-    stringstream result;
-    result << mySensor->objectType() << " " << myFlight->objectType();
-    return result.str();
+	stringstream result;
+	result << mySensor->objectType() << " " << myFlight->objectType();
+	return result.str();
 }
 
 /**
@@ -465,145 +499,147 @@ string Image::objectAssociations(void)
  */
 bool Image::is(string s)
 {
-    return (s == "Image" ? true : false);
+	return (s == "Image" ? true : false);
 }
 
 // XML methods
 //
 
 /**
- * 
+ *
  */
 void Image::xmlSetData(string xml)
 {
-    EDomElement root(xml);
-    id = Conversion::stringToInt(root.attribute("key"));
-    sensorId = Conversion::stringToInt(root.attribute("sensor_key"));
-    flightId = Conversion::stringToInt(root.attribute("flight_key"));
+	EDomElement root(xml);
+	id = Conversion::stringToInt(root.attribute("key"));
+	sensorId = Conversion::stringToInt(root.attribute("sensor_key"));
+	flightId = Conversion::stringToInt(root.attribute("flight_key"));
 	imageId = root.elementByTagName("imageId").toString();
-    width = root.elementByTagName("width").toInt();
-    height = root.elementByTagName("height").toInt();
-    filename = root.elementByTagName("fileName").toString();
-    filepath = root.elementByTagName("filePath").toString();
+	width = root.elementByTagName("width").toInt();
+	height = root.elementByTagName("height").toInt();
+	filename = root.elementByTagName("fileName").toString();
+	filepath = root.elementByTagName("filePath").toString();
     resolution = root.elementByTagName("resolution").toInt();
     resolutionUnit = root.elementByTagName("resolution").attribute("uom");
+    flightDirection = root.elementByTagName("flightDirection").toDouble();
 
-    //Isso deve ser corrigido...
-    //spatialCoordinates.xmlSetData(root.elementByTagName("spatialCoordinates").getContent());
+	//Isso deve ser corrigido...
+	//spatialCoordinates.xmlSetData(root.elementByTagName("spatialCoordinates").getContent());
 
-    EDomElement gnss = root.elementByTagName("GNSS");
-    deque<double> gnssPos = gnss.elementByTagName("gml:pos").toGmlPos();
-    if (gnssPos.size() == 3)
-    {
-	gnssAvailable = true;
-	gnssType = gnss.attribute("type");
-	gnssX0 = gnssPos.at(0);
-	gnssY0 = gnssPos.at(1);
-	gnssZ0 = gnssPos.at(2);
-    }
-    else
-    {
-	gnssAvailable = false;
-    }
-    if (gnss.getContent() == "" || gnss.elementByTagName("sigma").toString() == "Not Available")
-    {
-	gnssSigmaAvailable = false;
-    }
-    else
-    {
-	gnssSigmaAvailable = true;
-        gnssSigma.xmlSetData(gnss.elementByTagName("sigma").getContent());
-    }
+	EDomElement gnss = root.elementByTagName("GNSS");
+	deque<double> gnssPos = gnss.elementByTagName("gml:pos").toGmlPos();
+	if (gnssPos.size() == 3)
+	{
+		gnssAvailable = true;
+		gnssType = gnss.attribute("type");
+		gnssX0 = gnssPos.at(0);
+		gnssY0 = gnssPos.at(1);
+		gnssZ0 = gnssPos.at(2);
+	}
+	else
+	{
+		gnssAvailable = false;
+	}
+	if (gnss.getContent() == "" || gnss.elementByTagName("sigma").toString() == "Not Available")
+	{
+		gnssSigmaAvailable = false;
+	}
+	else
+	{
+		gnssSigmaAvailable = true;
+		gnssSigma.xmlSetData(gnss.elementByTagName("sigma").getContent());
+	}
 
-    EDomElement ins = root.elementByTagName("INS");
-    if (ins.getContent() == "" || ins.elementByTagName("omega").toString() == "Not Available")
-    {
-	insAvailable = false;
-    }
-    else
-    {
-	insAvailable = true;
-	insType = ins.attribute("type");
-	insOmega = ins.elementByTagName("omega").toDouble();
-	insPhi = ins.elementByTagName("phi").toDouble();
-	insKappa = ins.elementByTagName("kappa").toDouble();
-    }
-    if (ins.elementByTagName("sigma").toString() == "Not Available")
-    {
-	insSigmaAvailable = false;
-    }
-    else
-    {
-	insSigmaAvailable = true;
-        insSigma.xmlSetData(ins.elementByTagName("sigma").getContent());
-    }
+	EDomElement ins = root.elementByTagName("INS");
+	if (ins.getContent() == "" || ins.elementByTagName("omega").toString() == "Not Available")
+	{
+		insAvailable = false;
+	}
+	else
+	{
+		insAvailable = true;
+		insType = ins.attribute("type");
+		insOmega = ins.elementByTagName("omega").toDouble();
+		insPhi = ins.elementByTagName("phi").toDouble();
+		insKappa = ins.elementByTagName("kappa").toDouble();
+	}
+	if (ins.elementByTagName("sigma").toString() == "Not Available")
+	{
+		insSigmaAvailable = false;
+	}
+	else
+	{
+		insSigmaAvailable = true;
+		insSigma.xmlSetData(ins.elementByTagName("sigma").getContent());
+	}
 
-    // Fim da gambiarra temporaria.
+	// Fim da gambiarra temporaria.
 }
 
 /**
- * 
+ *
  */
 string Image::xmlGetData()
 {
-    stringstream result;
-    result << "<image key=\"" << Conversion::intToString(id) << "\" sensor_key=\"" << Conversion::intToString(sensorId) << "\" flight_key=\"" << Conversion::intToString(flightId) << "\">\n";
+	stringstream result;
+	result << "<image key=\"" << Conversion::intToString(id) << "\" sensor_key=\"" << Conversion::intToString(sensorId) << "\" flight_key=\"" << Conversion::intToString(flightId) << "\">\n";
 	result << "<imageId>" << imageId << "</imageId>\n";
-    result << "<width uom=\"#px\">" << Conversion::intToString(width) << "</width>\n";
-    result << "<height uom=\"#px\">" << Conversion::intToString(height) << "</height>\n";
-    result << "<fileName>" << filename << "</fileName>\n";
-    result << "<filePath>" << filepath << "</filePath>\n";
+	result << "<width uom=\"#px\">" << Conversion::intToString(width) << "</width>\n";
+	result << "<height uom=\"#px\">" << Conversion::intToString(height) << "</height>\n";
+	result << "<fileName>" << filename << "</fileName>\n";
+	result << "<filePath>" << filepath << "</filePath>\n";
     result << "<resolution uom=\"" << resolutionUnit << "\">" << Conversion::intToString(resolution) << "</resolution>\n";
+    result << "<flightDirection>" << Conversion::doubleToString(flightDirection) << "</flightDirection>\n";
 
-    //Isso deve ser corrigido...
-    //result << spatialCoordinates.xmlGetData();
+	//Isso deve ser corrigido...
+	//result << spatialCoordinates.xmlGetData();
 
 	result << "<GNSS uom=\"#m\" type=\"" << gnssType << "\">\n";
-    if (gnssAvailable)
-    {
-        result << "<gml:pos>" << Conversion::doubleToString(gnssX0) << " " << Conversion::doubleToString(gnssY0) << " " << Conversion::doubleToString(gnssZ0) << "</gml:pos>\n";
-    }
-    else
-    {
-	result << "<gml:pos>Not Available</gml:pos>\n";
-    }
-    if (gnssSigmaAvailable)
-    {
-	result << "<sigma>" << gnssSigma.xmlGetData() << "</gml:sigma>\n";
-    }
-    else
-    {
-	result << "<sigma>Not Available</sigma>\n";
-    }
-    result << "</GNSS>\n";
+	if (gnssAvailable)
+	{
+		result << "<gml:pos>" << Conversion::doubleToString(gnssX0) << " " << Conversion::doubleToString(gnssY0) << " " << Conversion::doubleToString(gnssZ0) << "</gml:pos>\n";
+	}
+	else
+	{
+		result << "<gml:pos>Not Available</gml:pos>\n";
+	}
+	if (gnssSigmaAvailable)
+	{
+		result << "<sigma>" << gnssSigma.xmlGetData() << "</gml:sigma>\n";
+	}
+	else
+	{
+		result << "<sigma>Not Available</sigma>\n";
+	}
+	result << "</GNSS>\n";
 
 	result << "<INS uom=\"#rad\" type=\"" << insType << "\">\n";
-    if (insAvailable)
-    {
-        result << "<omega>" << Conversion::doubleToString(insOmega) <<"</sigma>\n";
-        result << "<phi>" << Conversion::doubleToString(insPhi) <<"</sigma>\n";
-        result << "<kappa>" << Conversion::doubleToString(insKappa) <<"</sigma>\n";
-    }
-    else
-    {
-	result << "<omega>Not Available</omega>\n";
-	result << "<phi>Not Available</phi>\n";
-	result << "<kappa>Not Available</kappa>\n";
-    }
-    if (insSigmaAvailable)
-    {
-	result << "<sigma>" << insSigma.xmlGetData() << "</gml:sigma>\n";
-    }
-    else
-    {
-	result << "<sigma>Not Available</sigma>\n";
-    }
-    result << "</INS>\n";
+	if (insAvailable)
+	{
+		result << "<omega>" << Conversion::doubleToString(insOmega) <<"</sigma>\n";
+		result << "<phi>" << Conversion::doubleToString(insPhi) <<"</sigma>\n";
+		result << "<kappa>" << Conversion::doubleToString(insKappa) <<"</sigma>\n";
+	}
+	else
+	{
+		result << "<omega>Not Available</omega>\n";
+		result << "<phi>Not Available</phi>\n";
+		result << "<kappa>Not Available</kappa>\n";
+	}
+	if (insSigmaAvailable)
+	{
+		result << "<sigma>" << insSigma.xmlGetData() << "</gml:sigma>\n";
+	}
+	else
+	{
+		result << "<sigma>Not Available</sigma>\n";
+	}
+	result << "</INS>\n";
 
-    //Fim da gambiarra temporaria.
+	//Fim da gambiarra temporaria.
 
-    result << "</image>\n";
-    return result.str();
+	result << "</image>\n";
+	return result.str();
 }
 
 // Other methods
@@ -614,5 +650,26 @@ string Image::xmlGetData()
  */
 int Image::load()
 {
-    return 0;
+	return 0;
 }
+
+void Image::sortPoints()
+{
+	deque<Point*> listCtrl;
+
+	for(int i=0; i<myPoints.size() ;i++)
+	{
+		if (myPoints.at(i)->getType() == Point::CONTROL)
+			listCtrl.push_front(myPoints.at(i));
+		else
+			listCtrl.push_back(myPoints.at(i));
+
+		//qDebug("\tponto %d = %s",i, myPoints.at(i)->getPointId().c_str());//pnt->getPointId());
+	}
+	myPoints=listCtrl;
+}
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

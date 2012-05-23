@@ -4,8 +4,11 @@
 #include <QWidget>
 #include "ui_LoadingScreen.h"
 
-class LoadingScreen: public QWidget, public Ui::LoadingScreen
-{
+namespace Ui {
+class LoadingScreen;
+}
+
+class LoadingScreen : public QWidget {
 	Q_OBJECT
 public:
 	static LoadingScreen& instance();

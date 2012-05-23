@@ -1,8 +1,13 @@
 /**************************************************************************
-						SensorWithFiducialMarks.cpp
+	  SensorWithFiducialMarks.cpp
 **************************************************************************/
 
 #include "SensorWithFiducialMarks.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 // Constructors
 //
@@ -101,7 +106,7 @@ void SensorWithFiducialMarks::setLb(const Matrix& newLb, const Matrix& newSigmaL
 Matrix SensorWithFiducialMarks::getLb()
 {
 	if (Lb.getCols() == 0)
-  	marksToLb();
+		marksToLb();
 	return Lb;
 }
 
@@ -123,7 +128,7 @@ Matrix SensorWithFiducialMarks::getSigmaLb()
  * Set all the values of anaFidMarks deque at once
  * @param newAnaFidMarks a deque with the new values
  */
-void SensorWithFiducialMarks::setAnaFidMarks(deque<AnalogFiductialMark> newAnaFidMarks)
+void SensorWithFiducialMarks::setAnaFidMarks(deque<DetectorFiducialMark> newAnaFidMarks)
 {
 	anaFidMarks = newAnaFidMarks;
 }
@@ -132,7 +137,7 @@ void SensorWithFiducialMarks::setAnaFidMarks(deque<AnalogFiductialMark> newAnaFi
  * Get all the values of anaFidMarks deque at once
  * @return a deque the values of anaFidMarks
  */
-deque<AnalogFiductialMark> SensorWithFiducialMarks::getAnaFidMarks()
+deque<DetectorFiducialMark> SensorWithFiducialMarks::getAnaFidMarks()
 {
 	return anaFidMarks;
 }
@@ -141,7 +146,7 @@ deque<AnalogFiductialMark> SensorWithFiducialMarks::getAnaFidMarks()
  * Add one value to anaFidMarks deque
  * @param newAnaFidMark the value to be added
  */
-void SensorWithFiducialMarks::putAnaFidMark(AnalogFiductialMark newAnaFidMark)
+void SensorWithFiducialMarks::putAnaFidMark(DetectorFiducialMark newAnaFidMark)
 {
 	anaFidMarks.push_back(newAnaFidMark);
 }
@@ -149,26 +154,26 @@ void SensorWithFiducialMarks::putAnaFidMark(AnalogFiductialMark newAnaFidMark)
 /**
  * Get one value from anaFidMarks deque
  * @param id the id of the value
- * @return the value of the AnalogFiductialMark
+ * @return the value of the DetectorFiducialMark
  */
-AnalogFiductialMark SensorWithFiducialMarks::getAnaFidMark(int id)
+DetectorFiducialMark SensorWithFiducialMarks::getAnaFidMark(int id)
 {
 	for (unsigned int i = 0; i < anaFidMarks.size(); i++)
-	if (anaFidMarks.at(i).getId() == id)
+		if (anaFidMarks.at(i).getId() == id)
 			return anaFidMarks.at(i);
-	return AnalogFiductialMark();
+	return DetectorFiducialMark();
 }
 
 /**
  * Get one value from anaFidMarks deque
  * @param index the position of the value
- * @return the value of the AnalogFiductialMark
+ * @return the value of the DetectorFiducialMark
  */
-AnalogFiductialMark SensorWithFiducialMarks::getAnaFidMarkAt(unsigned int index)
+DetectorFiducialMark SensorWithFiducialMarks::getAnaFidMarkAt(unsigned int index)
 {
 	if (index < anaFidMarks.size())
 		return anaFidMarks.at(index);
-	return AnalogFiductialMark();
+	return DetectorFiducialMark();
 }
 
 /**
@@ -242,12 +247,12 @@ bool SensorWithFiducialMarks::is(string s)
 //
 
 /**
- * 
+ *
  */
 void SensorWithFiducialMarks::xmlSetData(string xml)
 {
 	EDomElement root(xml);
-        id = Conversion::stringToInt(root.attribute("key"));
+	id = Conversion::stringToInt(root.attribute("key"));
 	sensorId = root.elementByTagName("sensorId").toString();
 	geometry = root.elementByTagName("geometry").toString();
 	detector = root.elementByTagName("detector").toString();
@@ -260,7 +265,7 @@ void SensorWithFiducialMarks::xmlSetData(string xml)
 	for (unsigned int i = 0; i < xmlSpectralRanges.size(); i++)
 	{
 		SpectralRange* spec = new SpectralRange;
-                spec->band = Conversion::stringToInt(xmlSpectralRanges.at(i).attribute("band"));
+		spec->band = Conversion::stringToInt(xmlSpectralRanges.at(i).attribute("band"));
 		spec->inferiorLimit = xmlSpectralRanges.at(i).elementByTagName("inferiorLimit").toDouble();
 		spec->superiorLimit = xmlSpectralRanges.at(i).elementByTagName("superiorLimit").toDouble();
 		spectralRanges.push_back(*spec);
@@ -307,23 +312,23 @@ void SensorWithFiducialMarks::xmlSetData(string xml)
 
 	principalPointCoordinates.xmlSetData(root.elementByTagName("principalPointCoordinates").getContent());
 
-	deque<EDomElement> xmlFiductial = root.elementsByTagName("fiductialMark");
+	deque<EDomElement> xmlFiducial = root.elementsByTagName("fiducialMark");
 	anaFidMarks.clear();
-	for (unsigned int i = 0; i < xmlFiductial.size(); i++)
+	for (unsigned int i = 0; i < xmlFiducial.size(); i++)
 	{
-		AnalogFiductialMark* fiductial = new AnalogFiductialMark;
-		fiductial->xmlSetData(xmlFiductial.at(i).getContent());
-		anaFidMarks.push_back(*fiductial);
+		DetectorFiducialMark* fiducial = new DetectorFiducialMark;
+		fiducial->xmlSetData(xmlFiducial.at(i).getContent());
+		anaFidMarks.push_back(*fiducial);
 	}
 }
 
 /**
- * 
+ *
  */
 string SensorWithFiducialMarks::xmlGetData()
 {
 	stringstream result;
-        result << "<sensor key=\"" << Conversion::intToString(id) << "\">\n";
+	result << "<sensor key=\"" << Conversion::intToString(id) << "\">\n";
 	result << "<sensorId>" << sensorId << "</sensorId>\n";
 	result << "<type>\n";
 	result << "<geometry>" << geometry << "</geometry>\n";
@@ -334,9 +339,9 @@ string SensorWithFiducialMarks::xmlGetData()
 	result << "<spectralRanges uom=\"" << spectralRangesUnit << "\">\n";
 	for (unsigned int i = 0; i < spectralRanges.size(); i++)
 	{
-                result << "<spectralRange band=\"" << Conversion::intToString(spectralRanges.at(i).band) << "\">\n";
-                result << "<inferiorLimit>" << Conversion::doubleToString(spectralRanges.at(i).inferiorLimit) << "</inferiorLimit>\n";
-                result << "<superiorLimit>" << Conversion::doubleToString(spectralRanges.at(i).superiorLimit) << "</superiorLimit>\n";
+		result << "<spectralRange band=\"" << Conversion::intToString(spectralRanges.at(i).band) << "\">\n";
+		result << "<inferiorLimit>" << Conversion::doubleToString(spectralRanges.at(i).inferiorLimit) << "</inferiorLimit>\n";
+		result << "<superiorLimit>" << Conversion::doubleToString(spectralRanges.at(i).superiorLimit) << "</superiorLimit>\n";
 		result << "</spectralRange>\n";
 	}
 	result << "</spectralRanges>\n";
@@ -347,22 +352,22 @@ string SensorWithFiducialMarks::xmlGetData()
 	result << "<expiration>" << calibrationCertificateExpiration << "</expiration>\n";
 	result << "</calibrationCertificate>\n";
 	result << "<focalDistance uom=\"" << focalDistanceUnit << "\">\n";
-        result << "<value>" << Conversion::doubleToString(focalDistance) << "</value>\n";
+	result << "<value>" << Conversion::doubleToString(focalDistance) << "</value>\n";
 	if (focalDistanceSigma == 1.0)
 		result << "<sigma>Not Available</sigma>\n";
 	else
-                result << "<sigma>" << Conversion::doubleToString(focalDistanceSigma) << "</sigma>\n";
+		result << "<sigma>" << Conversion::doubleToString(focalDistanceSigma) << "</sigma>\n";
 	result << "</focalDistance>\n";
 	result << "<distortionCoefficients>\n";
 	result << "<radialSymmetric>\n";
 	for (unsigned int i = 0; i < rsCoefficients.size(); i++)
 	{
 		result << "<k" << i << ">\n";
-                result << "<value>" << Conversion::doubleToString(rsCoefficients.at(i).value) << "</value>\n";
+		result << "<value>" << Conversion::doubleToString(rsCoefficients.at(i).value) << "</value>\n";
 		if (rsCoefficients.at(i).sigma == 1.0)
 			result << "<sigma>Not Available</sigma>\n";
 		else
-                        result << "<sigma>" << Conversion::doubleToString(rsCoefficients.at(i).sigma) << "</sigma>\n";
+			result << "<sigma>" << Conversion::doubleToString(rsCoefficients.at(i).sigma) << "</sigma>\n";
 		result << "</k" << i << ">\n";
 	}
 	result << "</radialSymmetric>\n";
@@ -370,11 +375,11 @@ string SensorWithFiducialMarks::xmlGetData()
 	for (unsigned int i = 0; i < dCoefficients.size(); i++)
 	{
 		result << "<P" << i+1 << ">\n";
-                result << "<value>" << Conversion::doubleToString(dCoefficients.at(i).value) << "</value>\n";
+		result << "<value>" << Conversion::doubleToString(dCoefficients.at(i).value) << "</value>\n";
 		if (dCoefficients.at(i).sigma == 1.0)
 			result << "<sigma>Not Available</sigma>\n";
 		else
-                        result << "<sigma>" << Conversion::doubleToString(dCoefficients.at(i).sigma) << "</sigma>\n";
+			result << "<sigma>" << Conversion::doubleToString(dCoefficients.at(i).sigma) << "</sigma>\n";
 		result << "</P" << i+1 << ">\n";
 	}
 	result << "</decentered>\n";
@@ -382,12 +387,12 @@ string SensorWithFiducialMarks::xmlGetData()
 	result << "<principalPointCoordinates uom=\"" << principalPointCoordinates.getUnit() << "\">\n";
 	result << principalPointCoordinates.xmlGetData();
 	result << "</principalPointCoordinates>\n";
-	result << "<fiductialMarks uom=\"" << anaFidMarks.at(1).getUnit() << "\">\n";
+	result << "<fiducialMarks uom=\"" << anaFidMarks.at(1).getUnit() << "\">\n";
 	for (unsigned int i = 0; i < anaFidMarks.size(); i++)
 	{
 		result << anaFidMarks.at(i).xmlGetData() << "\n";
 	}
-	result << "</fiductialMarks>\n";
+	result << "</fiducialMarks>\n";
 	result << "</sensor>\n";
 	return result.str();
 }
@@ -412,3 +417,8 @@ void SensorWithFiducialMarks::marksToLb()
 		SigmaLb.set(i*2+2,i*2+1,anaFidMarks.at(i).getSigmaXiEta());
 	}
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

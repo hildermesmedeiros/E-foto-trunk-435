@@ -1,5 +1,5 @@
 /************************************************************************
-						IOQuality.h
+	  IOQuality.h
 **************************************************************************/
 
 #ifndef IOQUALITY_H
@@ -7,6 +7,11 @@
 
 #include "EObject.h"
 #include "Matrix.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 class Sensor;
 class InteriorOrientation;
@@ -64,5 +69,10 @@ public:
 	void calculate(InteriorOrientation* myIO, Sensor* mySensor);
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // IOQUALITY_H

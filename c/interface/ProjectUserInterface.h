@@ -1,5 +1,5 @@
 /**************************************************************************
-							 ProjectUserInterface.h
+		ProjectUserInterface.h
 **************************************************************************/
 
 
@@ -7,6 +7,11 @@
 #define PROJECTUSERINTERFACE_H
 
 #include "ProjectManager.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 class ProjectManager;
 
@@ -40,5 +45,10 @@ public:
 	//
 	virtual bool exec() = 0;
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif //PROJECTUSERINTERFACE_H

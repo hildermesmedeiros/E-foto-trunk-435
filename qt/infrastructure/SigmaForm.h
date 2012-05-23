@@ -17,6 +17,11 @@
 #include "EDom.h"
 #include "ScienceSpinBox.h"
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 class SigmaFormController: public QObject
 {
 	Q_OBJECT
@@ -44,15 +49,15 @@ protected:
 
 public:
 	QWidget* getContent();
-        void setDirection(string newDirection);
+	void setDirection(string newDirection);
 	string getDirection();
 	void setMode(string newMode);
 	string getMode();
 	void fillValues(string xml);
 	string getValues();
 	bool getValidate();
-        //paulo
-        void setNameLabels(QStringList newNames);
+	//paulo
+	void setNameLabels(QStringList newNames);
 
 public slots:
 	virtual void toMode(QString newMode);
@@ -104,5 +109,10 @@ public:
 	SigmaFormDialogButton(QWidget * parent = 0);
 	void setSigmaFormController(SigmaFormController* newController);
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // SIGMAFORM_H

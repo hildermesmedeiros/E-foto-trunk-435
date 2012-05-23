@@ -2,9 +2,13 @@
 #include <QFileDialog>
 #include "HeaderForm.h"
 #include "ProjectUserInterface_Qt.h"
-#include "CommonMethods.h"
 
-ImageForm :: ImageForm(QWidget *parent):AbstractForm(parent)
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
+ImageForm::ImageForm(QWidget *parent):AbstractForm(parent)
 {
 	setupUi(this);
 	gnssSigmaController = new SigmaFormController("Not Available",3);
@@ -20,14 +24,22 @@ ImageForm :: ImageForm(QWidget *parent):AbstractForm(parent)
 	insSigmaDialogButton->setSigmaFormController(insSigmaController);
 	insSigmaDialogButton->setVisible(false);
 	metadataGroup->setVisible(false);
-	lastPath = ".";
+    lastPath = ".";
 
 	connect(fileImageButton,SIGNAL(clicked()),this,SLOT(loadImageFile()));
+	connect(viewButton,SIGNAL(clicked()),this,SLOT(startSingleViewer()));
 	connect(fileNameLine,SIGNAL(textChanged(QString)),this,SLOT(metadataVisibleChanged(QString)));
 
 	//Aqui o campo de Flight_ID esta sendo escondido
 	label_6->setVisible(false);
 	flightIdComboBox->setVisible(false);
+
+	omegaDmsEdit->setDmsEditMode(DEG);
+	phiDmsEdit->setDmsEditMode(DEG);
+	kappaDmsEdit->setDmsEditMode(DEG);
+
+	groupBox->setVisible(false);
+    groupBox_2->setVisible(false);
 }
 
 void ImageForm::fillvalues(string values)
@@ -44,16 +56,13 @@ void ImageForm::fillvalues(string values)
 	tagXml += ede.attribute("flight_key");
 	tagXml += "\">";
 
-	imageIDLine->setText( (QString::fromUtf8(ede.elementByTagName("imageId").toString().c_str()) )	  );
+	imageIDLine->setText( (QString::fromUtf8(ede.elementByTagName("imageId").toString().c_str()) ));
 
-	widthLine->setText( (QString::fromUtf8(ede.elementByTagAtt("width","uom","#px").toString().c_str())+" px"  )
-					   );
+	widthLine->setText( (QString::fromUtf8(ede.elementByTagAtt("width","uom","#px").toString().c_str())+" px"  ));
 
-	heightLine->setText( (QString::fromUtf8(ede.elementByTagAtt("height","uom","#px").toString().c_str())+" px" )
-						);
+	heightLine->setText( (QString::fromUtf8(ede.elementByTagAtt("height","uom","#px").toString().c_str())+" px" ));
 
-	fileNameLine->setText( QString::fromUtf8(ede.elementByTagName("fileName").toString().c_str() )
-						  );
+	fileNameLine->setText( QString::fromUtf8(ede.elementByTagName("fileName").toString().c_str() ));
 
 	string auxString;
 	auxString = ede.elementByTagName("filePath").toString();
@@ -67,9 +76,13 @@ void ImageForm::fillvalues(string values)
 						  );
 
 	//flightIDSpin->setValue( (QString::fromUtf8(ede.elementByTagName("flightId").toString().c_str())).toInt(&ok)
-	//);
+    //);
+    resolutionSpin->setValue(0);
+    resolutionSpin->setSpecialValueText(" ");
+    if (ede.elementByTagAtt("resolution","uom","#dpi").getContent() != "" )
+        resolutionSpin->setValue( (QString::fromUtf8(ede.elementByTagAtt("resolution","uom","#dpi").toString().c_str())).toInt(&ok) );
 
-	resolutionSpin->setValue( (QString::fromUtf8(ede.elementByTagAtt("resolution","uom","#dpi").toString().c_str())).toInt(&ok) );
+    flightDirection = ede.elementByTagName("flightDirection").toDouble();
 
 	if (ede.elementByTagName("GNSS").getContent() == "")
 	{
@@ -109,6 +122,7 @@ void ImageForm::fillvalues(string values)
 	if (ede.elementByTagName("INS").getContent() == "")
 	{
 		insTypeComboBox->setCurrentIndex(0);
+
 		omegaDmsEdit->getDmsValue()->stringToDms("0 0 0");
 		phiDmsEdit->getDmsValue()->stringToDms("0 0 0");
 		kappaDmsEdit->getDmsValue()->stringToDms("0 0 0");
@@ -126,15 +140,21 @@ void ImageForm::fillvalues(string values)
 			insTypeComboBox->setCurrentIndex(1);
 		else
 			insTypeComboBox->setCurrentIndex(2);
-		omegaDmsEdit->getDmsValue()->radianoToDms(ede.elementByTagName("INS").elementByTagName("omega").toDouble());
-		phiDmsEdit->getDmsValue()->radianoToDms(ede.elementByTagName("INS").elementByTagName("phi").toDouble());
-		kappaDmsEdit->getDmsValue()->radianoToDms(ede.elementByTagName("INS").elementByTagName("kappa").toDouble());
+		omegaDmsEdit->setText(locale().toString(Dms::radianoToDegreeDecimal(ede.elementByTagName("INS").elementByTagName("omega").toDouble())));
+		phiDmsEdit->setText(locale().toString(Dms::radianoToDegreeDecimal(ede.elementByTagName("INS").elementByTagName("phi").toDouble())));
+		kappaDmsEdit->setText(locale().toString(Dms::radianoToDegreeDecimal(ede.elementByTagName("INS").elementByTagName("kappa").toDouble())));
 		omegaDmsEdit->updateValue();
 		phiDmsEdit->updateValue();
 		kappaDmsEdit->updateValue();
+
+
 		insSigmaController->fillValues(ede.elementByTagName("INS").elementByTagName("sigma").getContent());
 		activeINS = true;
 	}
+
+
+
+
 }
 
 string ImageForm::getvalues()
@@ -150,6 +170,7 @@ string ImageForm::getvalues()
 	auxStream << "<filePath>" << filePathLine->text().toUtf8().data()<<"</filePath>\n";
 	//auxStream << "<flightId>" << flightIDSpin->value() << "</flightId>\n";
 	auxStream << "<resolution uom=\"#dpi\">"<< resolutionSpin->value() <<"</resolution>\n";
+    auxStream << "<flightDirection>" << Conversion::doubleToString(flightDirection) << "</flightDirection>\n";
 	if (gnssGroup->isChecked())
 	{
 		string type = gnssTypeComboBox->currentIndex() == 0 ? "Initial": gnssTypeComboBox->currentIndex() == 1 ? "Fixed" : "Unused";
@@ -216,6 +237,10 @@ QString ImageForm::loadImageFile()
 		fileImageName = fileImage.right(fileImage.length()-i-1);
 		fileImagePath = fileImage.left(i);
 
+		QString sugestionID=fileImageName;
+		sugestionID.chop(4);
+		imageIDLine->setText(sugestionID);
+
 		fileNameLine->setText(fileImageName);
 		if (j<0)
 			filePathLine->setText(".");
@@ -223,16 +248,54 @@ QString ImageForm::loadImageFile()
 			filePathLine->setText(absolutePath.relativeFilePath(fileImage).left(j));
 		lastPath = filePathLine->text();
 		//***************************************************************************************************
-		int w, h, f;
-
-		CommonMethods::instance(CM::CVMethods)->loadImage(w,h,f,fileImage.toStdString());
-		CommonMethods::instance(CM::CVMethods)->freeImage();
+		int w, h;
+		bool success = false;
+		for (int i = 0; i < 100 && !success; i++)
+		{
+			QImage img(fileImage);
+			w = img.width(); h = img.height();
+			if (w != 0 && h != 0)
+            {
+                success = true;
+            }
+		}
+		if (!success)
+		{
+			QMessageBox* msgBox = new QMessageBox();
+			msgBox->setText("Error: The image loading process.");
+			msgBox->exec();
+        }
 		heightLine->setText(QString::number(h)+" px");
 		widthLine->setText(QString::number(w)+" px");
 		return fileImage;
 
 	}else
 		return fileNameLine->text();
+}
+
+void ImageForm::startSingleViewer()
+{
+	SingleViewer* sv = new SingleViewer(this);
+	sv->blockOpen();
+	sv->blockSave();
+	sv->blockMark();
+	sv->show();
+	sv->loadImage(filePathLine->text() + "/" + fileNameLine->text());
+
+    /*
+	SeparatedStereoViewer* v = new SeparatedStereoViewer(this);
+	v->show();
+	v->loadLeftImage(filePathLine->text() + "/" + fileNameLine->text());
+	v->loadRightImage(filePathLine->text() + "/" + fileNameLine->text());
+
+	StereoViewer* s = new StereoViewer(this);
+	s->show();
+	s->loadLeftImage(filePathLine->text() + "/" + fileNameLine->text());
+	s->loadRightImage(filePathLine->text() + "/" + fileNameLine->text());
+	s->blockOpen();
+	s->blockSave();
+	//s->blockMark();
+    */
 }
 
 void ImageForm::metadataVisibleChanged(QString newText)
@@ -261,17 +324,19 @@ bool ImageForm::isForm(string formName)
 void ImageForm::setIOAvailable(bool state)
 {
 	if (state)
-		labelIO->setText("Interior orientation is available");
-	else
-		labelIO->setText("Interior orientation is not available");
+	;
+		//labelIO->setText("Interior orientation is available");
+	//else
+		//labelIO->setText("Interior orientation is not available");
 }
 
 void ImageForm::setEOAvailable(bool state)
 {
 	if (state)
-		labelEO->setText("Spatial resection is available");
-	else
-		labelEO->setText("Spatial resection is not available");
+	;
+		//labelEO->setText("Spatial resection is available");
+	//else
+		//labelEO->setText("Spatial resection is not available");
 }
 
 void ImageForm::cleanForm()
@@ -286,14 +351,31 @@ void ImageForm::cleanForm()
 	gnssSigmaController->fillValues("Not Available");
 	//inertial navigation
 	insSigmaController->fillValues("Not Available");
-	omegaDmsEdit->clear();
-	kappaDmsEdit->clear();
-	phiDmsEdit->clear();
+	omegaDmsEdit->setText(locale().toString(locale().toDouble("0.0"),'f',4));
+	kappaDmsEdit->setText(locale().toString(locale().toDouble("0.0"),'f',4));
+	phiDmsEdit->setText(locale().toString(locale().toDouble("0.0"),'f',4));
 	//metadata
 	fileNameLine->clear();
 	filePathLine->clear();
 	heightLine->clear();
-	widthLine->clear();
+    widthLine->clear();
+
+    phiLabel->clear();
+    omegaLabel->clear();
+    kappaLabel->clear();
+    x0Label->clear();
+    y0Label->clear();
+    z0Label->clear();
+    a0Label->clear();
+    a1Label->clear();
+    a2Label->clear();
+    b0Label->clear();
+    b1Label->clear();
+    b2Label->clear();
+
+	gnssGroup->setChecked(false);
+	insGroup->setChecked(false);
+    flightDirection = 0.0;
 }
 
 void ImageForm::setFormLocale(QLocale locale)
@@ -318,3 +400,8 @@ void ImageForm::setFormLocale(QLocale locale)
 	widthLine->setLocale(locale);
 
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

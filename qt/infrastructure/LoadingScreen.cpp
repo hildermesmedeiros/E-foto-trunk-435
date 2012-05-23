@@ -17,8 +17,8 @@ LoadingScreen& LoadingScreen::instance()
 }
 
 LoadingScreen::LoadingScreen(QWidget *parent) :
-		QWidget(parent),
-		ui(new Ui::LoadingScreen)
+	QWidget(parent),
+	ui(new Ui::LoadingScreen)
 {
 	ui->setupUi(this);
 	setWindowFlags(Qt::WindowMinimizeButtonHint | Qt::CustomizeWindowHint);

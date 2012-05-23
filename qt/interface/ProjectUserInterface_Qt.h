@@ -23,6 +23,13 @@
 #include <QModelIndex>
 #include <QStackedWidget>
 #include <QScrollArea>
+#include <QFile>
+
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 class ProjectUserInterface_Qt : public QMainWindow, public Ui::ProjectMainWindow, public ProjectUserInterface
 {
@@ -49,7 +56,7 @@ protected:
 	ControlButtons controlButtons;
 	QModelIndex currentIndex;
 	string savedIn;
-        bool editState; bool addNewState; bool changeModule;
+	bool editState; bool addNewState; bool changeModule;
 
 protected slots:
 	virtual void languageChange();
@@ -78,11 +85,23 @@ public:
 	void viewImages();
 	void viewImage(int id);
 	QString getSavedIn();
-	EDomElement pointTxtToXml(QString point, int key, int line, string typePoint="control");
+	string pointTxtToXml(QString point, int key, int line, string typePoint="control");
 	string edomPointToTxt(EDomElement points);
+
+	string pointTxtToXml2(QString point, int key, int line, string typePoint="photogrammetric");
+
+
 
 	EDomElement imageTxtToXml(QString image, int key, int line, int sensorKey=0, int flightKey=0);
 	string edomImageToTxt(EDomElement images);
+
+	// Inserido pelo Paulo 05/09/2011
+	//insere as coordenadas digitais no ponto
+	bool insertDigitalCoordinates(QString coordinates);
+	bool availablePhotoTri();
+	void updateLabelFileName();
+	//bool availabeOI();
+	//bool availableOE();
 
 
 public slots:
@@ -93,6 +112,10 @@ public slots:
 	virtual bool saveFileAs(bool onNewProject = false);
 	virtual void executeIO();
 	virtual void executeSR();
+	virtual void executeFT();
+	virtual void executeDEM();
+	virtual void executeOrtho();
+	virtual void executeSP();
 	virtual void processTreeClick(QModelIndex);
 	virtual void exportSPFile();
 
@@ -139,8 +162,31 @@ public slots:
 	void importPointsFromTxt();
 	void exportPointsToTxt();
 	void importImagesFromTxt();
+	void importPointsFromTxt2();
+
+	/*Paulo importar imagens em batch 26/01/12*/
+	void importImagesBatch();
+    string addImageXml(QString fileName, int keyImage, int dpi = 0);
+    string addImageXml(QString fileName, int keyImage, int widthImages, int heightImages, int dpi = 0 );
+
+	/*Paulo importar Ois em batch 26/01/12*/
+	void importOIDigitalMarks();
+	string OIToXml(QStringList oiMarks, int imageKey);
 	//void exportImagesToTxt();
 
+	void importDigitalCoordinatesFromTxt();
+
+	void updateCurrentForm();
+	void deleteEmptyPoints();
+
+
+	void exportDigitalCoordinates();
+	string edomDigitalCoordinatesPointToTxt(EDomElement points);
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // PROJECTUSERINTERFACE_QT_H

@@ -3,6 +3,11 @@
 #include <limits>
 #include <math.h>
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 ScienceSpinBox::ScienceSpinBox(QWidget * parent): QDoubleSpinBox(parent)
 {
 	setButtonSymbols(QAbstractSpinBox::NoButtons);
@@ -206,14 +211,14 @@ int ScienceSpinBox::decimalOffset() const
 	int delimiterPos;
 	int cursorPos;
 	/* Creio que isso gerava muitos erros
-	if (prefixtext.size() && text.startsWith(prefixtext))
-	{
-		delimiterPos = text.indexOf(delimiter,prefix().size());
-		cursorPos = lineEdit()->cursorPosition() - prefixtext.size();
-	}
-	delimiterPos = text.indexOf(delimiter,prefix().size());
-	cursorPos = lineEdit()->cursorPosition() - prefixtext.size();
-	*/
+ if (prefixtext.size() && text.startsWith(prefixtext))
+ {
+  delimiterPos = text.indexOf(delimiter,prefix().size());
+  cursorPos = lineEdit()->cursorPosition() - prefixtext.size();
+ }
+ delimiterPos = text.indexOf(delimiter,prefix().size());
+ cursorPos = lineEdit()->cursorPosition() - prefixtext.size();
+ */
 	if (prefixtext.size() && text.startsWith(prefixtext))
 	{
 		delimiterPos = text.indexOf(delimiter,prefix().size())- prefixtext.size();
@@ -247,12 +252,12 @@ bool ScienceSpinBox::eventFilter(QObject *obj, QEvent *event)
 
 	//if (obj == lineEdit())
 	//{
-		if (event->type() == QEvent::MouseButtonPress)
-		{
-			QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-			mousePressEvent(mouseEvent);
-			return true;
-		}
+	if (event->type() == QEvent::MouseButtonPress)
+	{
+		QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+		mousePressEvent(mouseEvent);
+		return true;
+	}
 	//}
 
 	if (event->type() == QEvent::FocusIn)
@@ -271,9 +276,9 @@ bool ScienceSpinBox::eventFilter(QObject *obj, QEvent *event)
 
 	//if (event->type() == QEvent::KeyRelease)
 	//{
-		//QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-		//keyReleaseEvent(keyEvent);
-		//return true;
+	//QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+	//keyReleaseEvent(keyEvent);
+	//return true;
 	//}
 
 	return QDoubleSpinBox::eventFilter(obj,event);
@@ -338,10 +343,10 @@ void ScienceSpinBox::focusInEvent(QFocusEvent *event)
 /*
 void ScienceSpinBox::timerEvent(QTimerEvent *event)
 {
-	qDebug("EventTimer");
-	setValue(valueFromText(lineEdit()->text()));
-	selectMantissa();
-	killTimer(event->timerId());
+ qDebug("EventTimer");
+ setValue(valueFromText(lineEdit()->text()));
+ selectMantissa();
+ killTimer(event->timerId());
 }
 */
 
@@ -376,28 +381,28 @@ void ScienceSpinBox::keyPressEvent(QKeyEvent *event)
 			QDoubleSpinBox::keyPressEvent(event);
 	}
 	else if(event->key()==Qt::Key_Comma)
+	{
+		if(locale().decimalPoint()=='.')
 		{
-			if(locale().decimalPoint()=='.')
-			{
-				keyPressEvent(new QKeyEvent(QEvent::KeyPress,Qt::Key_Period,event->modifiers(),"."));
-				//return;
-			}
-			else
-				QDoubleSpinBox::keyPressEvent(event);
+			keyPressEvent(new QKeyEvent(QEvent::KeyPress,Qt::Key_Period,event->modifiers(),"."));
+			//return;
 		}
+		else
+			QDoubleSpinBox::keyPressEvent(event);
+	}
 	else // pass the event on to the parent class
 		QDoubleSpinBox::keyPressEvent(event);
 
 	/*
-	else if (event->key() == Qt::Key_Down || event->key() == Qt::Key_Up || event->key() == Qt::Key_Right || event->key() == Qt::Key_Left)
-	{
-		if (adjustDelayer.isActive())
-		{
-			adjustDelayer.stop();
-			//qDebug("adjustActive capted");
-		}
-		adjustDelayer.start(5000);
-	}*/
+ else if (event->key() == Qt::Key_Down || event->key() == Qt::Key_Up || event->key() == Qt::Key_Right || event->key() == Qt::Key_Left)
+ {
+  if (adjustDelayer.isActive())
+  {
+   adjustDelayer.stop();
+   //qDebug("adjustActive capted");
+  }
+  adjustDelayer.start(5000);
+ }*/
 
 	//QDoubleSpinBox::keyPressEvent(event);
 }
@@ -406,13 +411,13 @@ void ScienceSpinBox::keyPressEvent(QKeyEvent *event)
 /*
 void ScienceSpinBox::keyReleaseEvent(QKeyEvent *event)
 {
-	if (event->key() == Qt::Key_Down || event->key() == Qt::Key_Up)
-	{
-		qDebug("key_Released");
-		//adjustDelayer.start(1000);
-	}
-	// pass the event on to the parent class
-	QDoubleSpinBox::keyPressEvent(event);
+ if (event->key() == Qt::Key_Down || event->key() == Qt::Key_Up)
+ {
+  qDebug("key_Released");
+  //adjustDelayer.start(1000);
+ }
+ // pass the event on to the parent class
+ QDoubleSpinBox::keyPressEvent(event);
 }
 */
 
@@ -480,8 +485,8 @@ bool ScienceSpinBox::isIntermediateValue(const QString &str) const
 	}
 	// left > 0, with max < 0 and no '-'
 	if ((left >= 0 && max_left < 0 && !str.startsWith(QLatin1Char('-')))
-	// left > 0, with min > 0
-		|| (left < 0 && min_left >= 0))
+			// left > 0, with min > 0
+			|| (left < 0 && min_left >= 0))
 	{
 		//qDebug("returns false");
 		return false;
@@ -503,7 +508,7 @@ bool ScienceSpinBox::isIntermediateValue(const QString &str) const
 				return ret;
 			} else if (qAbs(max_left - min_left) == 1) {
 				const bool ret = isIntermediateValueHelper(qAbs(left), min_right, negative ? 0 : dec)
-								 || isIntermediateValueHelper(qAbs(left), negative ? dec : 0, max_right);
+						|| isIntermediateValueHelper(qAbs(left), negative ? dec : 0, max_right);
 				//qDebug() << __FILE__ << __LINE__ << "returns" << ret;
 				return ret;
 			} else {
@@ -563,32 +568,32 @@ QVariant ScienceSpinBox::validateAndInterpret(QString &input, int &pos, QValidat
 	// Test possible 'Intermediate' reasons
 	switch (len)
 	{
-		case 0:
-			// Length 0 is always 'Intermediate', except for min=max
-			if (max != min)	{
-				state = QValidator::Intermediate;
-			} else {
-				state = QValidator::Invalid;
-			}
-			goto end;
-		case 1:
-			// if only char is '+' or '-'
-			if (copy.at(0) == delimiter
+	case 0:
+		// Length 0 is always 'Intermediate', except for min=max
+		if (max != min)	{
+			state = QValidator::Intermediate;
+		} else {
+			state = QValidator::Invalid;
+		}
+		goto end;
+	case 1:
+		// if only char is '+' or '-'
+		if (copy.at(0) == delimiter
 				|| (plus && copy.at(0) == QLatin1Char('+'))
 				|| (minus && copy.at(0) == QLatin1Char('-'))) {
-				state = QValidator::Intermediate;
-				goto end;
-			}
-			break;
-		case 2:
-			// if only chars are '+' or '-' followed by Comma seperator (delimiter)
-			if (copy.at(1) == delimiter
+			state = QValidator::Intermediate;
+			goto end;
+		}
+		break;
+	case 2:
+		// if only chars are '+' or '-' followed by Comma seperator (delimiter)
+		if (copy.at(1) == delimiter
 				&& ((plus && copy.at(0) == QLatin1Char('+')) || (minus && copy.at(0) == QLatin1Char('-')))) {
-				state = QValidator::Intermediate;
-				goto end;
-			}
-			break;
-		default: break;
+			state = QValidator::Intermediate;
+			goto end;
+		}
+		break;
+	default: break;
 	} // end switch
 
 
@@ -623,13 +628,13 @@ QVariant ScienceSpinBox::validateAndInterpret(QString &input, int &pos, QValidat
 					goto end;
 				}
 			}
-		// if no decimal separator exists
+			// if no decimal separator exists
 		} else {
 			const QChar &last = copy.at(len - 1);
 			const QChar &secondLast = copy.at(len - 2);
 			// group of two thousand or space chars is invalid
 			if ((last == thousand || last.isSpace())
-				&& (secondLast == thousand || secondLast.isSpace())) {
+					&& (secondLast == thousand || secondLast.isSpace())) {
 				state = QValidator::Invalid;
 				//qDebug() << __FILE__ << __LINE__<< "state is set to Invalid";
 				goto end;
@@ -732,9 +737,9 @@ QVariant ScienceSpinBox::validateAndInterpret(QString &input, int &pos, QValidat
 		}
 	}
 
-end:
-	// if something went wrong, set num to something valid
-	if (state != QValidator::Acceptable) {
+	end:
+		// if something went wrong, set num to something valid
+		if (state != QValidator::Acceptable) {
 		num = max > 0 ? min : max;
 	}
 
@@ -851,7 +856,7 @@ void ScienceSpinBox::stepDownMantissa()
 	QString src = locale().toString(dest.toDouble()-pow(10,decimalOffset()/*-dispDecimals*/), 'f', dispDecimals);
 	int cursorPos = lineEdit()->cursorPosition();
 	if (cursorPos == delimiterPosition() || cursorPos == exponentialPosition()
-		|| (cursorPos==0 && valueFromText(text)<0))
+			|| (cursorPos==0 && valueFromText(text)<0))
 		return;
 	// remove thousand sign
 	if (qAbs(value()) >= 1000.0)
@@ -863,19 +868,19 @@ void ScienceSpinBox::stepDownMantissa()
 	{
 		lineEdit()->setText(text);
 		/*
-		if (dest.size()<src.size())
-			cursorPos++;
-		else if (dest.size()>src.size())
-			cursorPos--;
-		lineEdit()->setSelection(cursorPos+1,-1);
-		*/
+  if (dest.size()<src.size())
+   cursorPos++;
+  else if (dest.size()>src.size())
+   cursorPos--;
+  lineEdit()->setSelection(cursorPos+1,-1);
+  */
 	}
 	else
 	{
 		setValue(minimum());
 	}
 	int oldExp = exponent().toInt();
-//	int cursorPos = lineEdit()->cursorPosition();
+	//	int cursorPos = lineEdit()->cursorPosition();
 	int aux = (delimiterPosition() > cursorPos);
 	setValue(valueFromText(lineEdit()->text()));
 	int offset = abs(cursorPos+(exponent().toInt()-oldExp))-aux;
@@ -892,7 +897,7 @@ void ScienceSpinBox::stepUpMantissa()
 	QString src = locale().toString(dest.toDouble()+pow(10,decimalOffset()/*-dispDecimals*/), 'f', dispDecimals);
 	int cursorPos = lineEdit()->cursorPosition();
 	if (cursorPos == delimiterPosition() || cursorPos == exponentialPosition()
-		|| (cursorPos==0 && valueFromText(text)<0))
+			|| (cursorPos==0 && valueFromText(text)<0))
 		return;
 	// remove thousand sign
 	if (qAbs(value()) >= 1000.0)
@@ -904,19 +909,19 @@ void ScienceSpinBox::stepUpMantissa()
 	{
 		lineEdit()->setText(text);
 		/*
-		if (dest.size()<src.size())
-			cursorPos++;
-		else if (dest.size()>src.size())
-			cursorPos--;
-		lineEdit()->setSelection(cursorPos+1,-1);
-		*/
+  if (dest.size()<src.size())
+   cursorPos++;
+  else if (dest.size()>src.size())
+   cursorPos--;
+  lineEdit()->setSelection(cursorPos+1,-1);
+  */
 	}
 	else
 	{
 		setValue(maximum());
 	}
 	int oldExp = exponent().toInt();
-//	int cursorPos = lineEdit()->cursorPosition();
+	//	int cursorPos = lineEdit()->cursorPosition();
 	int aux = (delimiterPosition() > cursorPos);
 	setValue(valueFromText(lineEdit()->text()));
 	int offset = abs(cursorPos+(exponent().toInt()-oldExp))-aux;
@@ -940,19 +945,19 @@ void ScienceSpinBox::adjustDisplay()
 	lineEdit()->setCursorPosition(offset);
 
 	/* Isso não funciona
-	int oldExp = exponent().toInt();
-	setValue(valueFromText(lineEdit()->text()));
-	int newExp = exponent().toInt();
-	if (newExp>oldExp)
-		lineEdit()->cursorForward(false,newExp-oldExp+2);
-	else if (newExp<oldExp)
-		lineEdit()->cursorBackward(false,oldExp-newExp+2);
-		*/
+ int oldExp = exponent().toInt();
+ setValue(valueFromText(lineEdit()->text()));
+ int newExp = exponent().toInt();
+ if (newExp>oldExp)
+  lineEdit()->cursorForward(false,newExp-oldExp+2);
+ else if (newExp<oldExp)
+  lineEdit()->cursorBackward(false,oldExp-newExp+2);
+  */
 	//lineEdit()->setCursorPosition(delimiterPosition()-1);
 }
 
 // reimplemented function, copied from qspinbox.cpp
-bool ScienceSpinBox::isIntermediateValueHelper(qint64 num, qint64 min, qint64 max, qint64 *match)
+static bool isIntermediateValueHelper(qint64 num, qint64 min, qint64 max, qint64 *match)
 {
 	//qDebug("isIntermediateValueHelper");
 	//qDebug("%lld %lld %lld", num, min, max);
@@ -1003,3 +1008,8 @@ bool ScienceSpinBox::isIntermediateValueHelper(qint64 num, qint64 min, qint64 ma
 	//qDebug("returns false");
 	return false;
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

@@ -71,7 +71,7 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <property name="text">
-              <string>Verification</string>
+              <string>Checking</string>
              </property>
             </item>
             <item>
@@ -128,7 +128,7 @@ p, li { white-space: pre-wrap; }
             </spacer>
            </item>
            <item>
-            <widget class="SigmaFormDialogButton" name="sigmaDialogButton">
+            <widget class="br::uerj::eng::efoto::SigmaFormDialogButton" name="sigmaDialogButton">
              <property name="text">
               <string>PushButton</string>
              </property>
@@ -142,7 +142,7 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item>
-            <widget class="SigmaFormTypeSelector" name="sigmaSelector"/>
+            <widget class="br::uerj::eng::efoto::SigmaFormTypeSelector" name="sigmaSelector"/>
            </item>
           </layout>
          </item>
@@ -160,7 +160,7 @@ p, li { white-space: pre-wrap; }
                 </widget>
                </item>
                <item>
-                <widget class="EfotoDoubleSpinBox" name="eDoubleSpinBox">
+                <widget class="br::uerj::eng::efoto::EfotoDoubleSpinBox" name="eDoubleSpinBox">
                  <property name="buttonSymbols">
                   <enum>QAbstractSpinBox::NoButtons</enum>
                  </property>
@@ -196,7 +196,7 @@ p, li { white-space: pre-wrap; }
                 </widget>
                </item>
                <item>
-                <widget class="EfotoDoubleSpinBox" name="nDoubleSpinBox">
+                <widget class="br::uerj::eng::efoto::EfotoDoubleSpinBox" name="nDoubleSpinBox">
                  <property name="buttonSymbols">
                   <enum>QAbstractSpinBox::NoButtons</enum>
                  </property>
@@ -229,7 +229,7 @@ p, li { white-space: pre-wrap; }
                 </widget>
                </item>
                <item>
-                <widget class="EfotoDoubleSpinBox" name="hDoubleSpinBox">
+                <widget class="br::uerj::eng::efoto::EfotoDoubleSpinBox" name="hDoubleSpinBox">
                  <property name="buttonSymbols">
                   <enum>QAbstractSpinBox::NoButtons</enum>
                  </property>
@@ -252,7 +252,7 @@ p, li { white-space: pre-wrap; }
             </layout>
            </item>
            <item>
-            <widget class="SigmaFormContent" name="sigmaContent">
+            <widget class="br::uerj::eng::efoto::SigmaFormContent" name="sigmaContent">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -309,12 +309,12 @@ p, li { white-space: pre-wrap; }
            </column>
            <column>
             <property name="text">
-             <string>Line</string>
+             <string>Column</string>
             </property>
            </column>
            <column>
             <property name="text">
-             <string>Column</string>
+             <string>Line</string>
             </property>
            </column>
           </widget>
@@ -329,23 +329,23 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SigmaFormTypeSelector</class>
+   <class>br::uerj::eng::efoto::SigmaFormTypeSelector</class>
    <extends>QComboBox</extends>
    <header>SigmaForm.h</header>
   </customwidget>
   <customwidget>
-   <class>SigmaFormContent</class>
+   <class>br::uerj::eng::efoto::SigmaFormContent</class>
    <extends>QFrame</extends>
    <header>SigmaForm.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>EfotoDoubleSpinBox</class>
+   <class>br::uerj::eng::efoto::EfotoDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>EfotoDoubleSpinBox.h</header>
   </customwidget>
   <customwidget>
-   <class>SigmaFormDialogButton</class>
+   <class>br::uerj::eng::efoto::SigmaFormDialogButton</class>
    <extends>QPushButton</extends>
    <header>SigmaForm.h</header>
   </customwidget>

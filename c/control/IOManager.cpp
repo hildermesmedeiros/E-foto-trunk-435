@@ -1,5 +1,5 @@
 /**************************************************************************
-							   IOManager.cpp
+		  IOManager.cpp
 **************************************************************************/
 
 #include "IOManager.h"
@@ -14,6 +14,11 @@
 
 // Constructors and destructors
 //
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 IOManager::IOManager()
 {
@@ -74,11 +79,11 @@ PositionMatrix IOManager::getAnalogMarks()
 	return PositionMatrix();
 }
 
-bool IOManager::measureMark(int id, int col, int lin)
+bool IOManager::measureMark(int id, double col, double lin)
 {
 	if (started)
 	{
-		DigitalFiductialMark* myMark = new DigitalFiductialMark(id, myImage->getId(), col, lin);
+		ImageFiducialMark* myMark = new ImageFiducialMark(id, myImage->getId(), col, lin);
 		myImage->deleteDigFidMark(id);
 		myImage->putDigFidMark(*myMark);
 		return true;
@@ -98,13 +103,13 @@ deque<string> IOManager::markData(int index)
 	{
 		PositionMatrix analogMarks = getAnalogMarks();
 
-                result.push_back(Conversion::doubleToString(analogMarks.get(2 * index + 1),3));
-                result.push_back(Conversion::doubleToString(analogMarks.get(2 * index + 2),3));
-		DigitalFiductialMark myMark = myImage->getDigFidMark(index + 1);
+		result.push_back(Conversion::doubleToString(analogMarks.get(2 * index + 1),3));
+		result.push_back(Conversion::doubleToString(analogMarks.get(2 * index + 2),3));
+		ImageFiducialMark myMark = myImage->getDigFidMark(index + 1);
 		if (myMark.isAvailable())
 		{
-                        result.push_back(Conversion::intToString(myMark.getCol()));
-                        result.push_back(Conversion::intToString(myMark.getLin()));
+			result.push_back(Conversion::doubleToString(myMark.getCol()));
+			result.push_back(Conversion::doubleToString(myMark.getLin()));
 		}
 	}
 	return result;
@@ -118,7 +123,6 @@ unsigned int IOManager::getTotalMarks()
 int IOManager::getCalculationMode()
 {
 	string mode = mySensor->getCalculationMode();
-	cout << mode << endl;
 	return mode == "With Fiducial Marks"? 1 : mode == "With Sensor Dimensions" ? 2 : mode == "Fixed Parameters" ? 3 : 0;
 }
 
@@ -163,7 +167,7 @@ deque<string> IOManager::makeReport()
 	deque<string> result;
 	result.push_back(myIO->getXa().xmlGetData());
 	result.push_back(myIO->getLa().xmlGetData());
-        result.push_back(Conversion::doubleToString(myIO->getQuality().getsigma0Squared()));
+	result.push_back(Conversion::doubleToString(myIO->getQuality().getsigma0Squared()));
 	result.push_back(myIO->getQuality().getV().xmlGetData());
 	result.push_back(myIO->getQuality().getSigmaXa().xmlGetData());
 	result.push_back(myIO->getQuality().getSigmaLa().xmlGetData());
@@ -175,23 +179,23 @@ bool IOManager::exec()
 	if (manager != NULL && mySensor != NULL && myImage != NULL && myIO != NULL)
 		if (myImage->getSensorId() == mySensor->getId() && myIO->getImageId() == myImage->getId())
 		{
-		if (manager->getInterfaceType().compare("Qt") == 0)
-		{
-			//myInterface = new IOUserInterface_Qt(this);
-			myInterface = IOUserInterface_Qt::instance(this);
-		}
-		myImage->setSensor(mySensor);
-		myIO->setImage(myImage);
-		started = true;
-		if (myInterface != NULL)
-		{
-			myInterface->exec();
-		}
-		//if (manager->getInterfaceType().compare("Qt") == 0)
-		//{
+			if (manager->getInterfaceType().compare("Qt") == 0)
+			{
+				//myInterface = new IOUserInterface_Qt(this);
+				myInterface = IOUserInterface_Qt::instance(this);
+			}
+			myImage->setSensor(mySensor);
+			myIO->setImage(myImage);
+			started = true;
+			if (myInterface != NULL)
+			{
+				myInterface->exec();
+			}
+			//if (manager->getInterfaceType().compare("Qt") == 0)
+			//{
 			//IOUserInterface_Qt::createInstance(this)->exec();
-		//}
-	}
+			//}
+		}
 	return status;
 }
 
@@ -214,7 +218,7 @@ bool IOManager::save(string path)
 	if (started)
 	{
 		FILE* pFile;
-                string output = "IO state data for Image " + Conversion::intToString(myImage->getId()) + "\n\n";
+		string output = "IO state data for Image " + Conversion::intToString(myImage->getId()) + "\n\n";
 
 		output += mySensor->xmlGetData();
 		output += "\n";
@@ -310,10 +314,15 @@ int IOManager::getFrameColumns()
 void IOManager::acceptIO()
 {
 	EDomElement newXml(manager->xmlGetData());
-        if (newXml.elementByTagAtt("imageIO", "image_key", Conversion::intToString(myImage->getId())).getContent() != "")
-                newXml.replaceChildByTagAtt("imageIO", "image_key", Conversion::intToString(myImage->getId()), myIO->xmlGetData());
+	if (newXml.elementByTagAtt("imageIO", "image_key", Conversion::intToString(myImage->getId())).getContent() != "")
+		newXml.replaceChildByTagAtt("imageIO", "image_key", Conversion::intToString(myImage->getId()), myIO->xmlGetData());
 	else
 		newXml.addChildAtTagName("interiorOrientation", myIO->xmlGetData());
 	manager->xmlSetData(newXml.getContent());
 	manager->setSavedState(false);
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

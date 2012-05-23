@@ -1,12 +1,16 @@
 /*******************************************************************************
-								Sensor.h
+		Sensor.h
 *******************************************************************************/
 
 #ifndef SENSOR_H
 #define SENSOR_H
 
 #include "EObject.h"
-//#include "AnalogImageSpaceCoordinate.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 class FrameSensor;
 class SensorWithFiducialMarks;
@@ -14,7 +18,7 @@ class SensorWithKnowDimensions;
 class SensorWithKnowParameters;
 class Image;
 class Flight;
-class AnalogImageSpaceCoordinate;
+class DetectorSpaceCoordinate;
 
 // Classes/Structs used in Sensor only.
 //
@@ -62,7 +66,7 @@ protected:
 	string sensorId;
 	//double focalDistance;
 	//double focalDistanceSigma;
-	//AnalogImageSpaceCoordinate principalPointCoordinates; // Isso tem que virar um tipo próprio.
+	//DetectorSpaceCoordinate principalPointCoordinates; // Isso tem que virar um tipo próprio.
 	string description;
 	string geometry;
 	string detector;
@@ -96,13 +100,13 @@ public:
 	void setId(int newId);
 	//void setFocalDistance(double newFocalDistance);
 	//void setFocalDistanceSigma(double newFocalDistanceSigma);
-	//void setPrincipalPointCoordinates(AnalogImageSpaceCoordinate newCoordinates);
+	//void setPrincipalPointCoordinates(DetectorSpaceCoordinate newCoordinates);
 	void setDescription(string newDescription);
 	void setCalculationMode(string newCalculationMode);
 	int getId();
 	virtual double getFocalDistance() = 0;
 	virtual double getFocalDistanceSigma() = 0;
-	virtual AnalogImageSpaceCoordinate getPrincipalPointCoordinates() = 0;
+	virtual DetectorSpaceCoordinate getPrincipalPointCoordinates() = 0;
 	string getDescription();
 	string getCalculationMode();
 
@@ -122,5 +126,10 @@ public:
 	virtual string objectType(void);
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // SENSOR_H

@@ -1,11 +1,15 @@
 /*******************************************************************************
-								Sensor.cpp
+		Sensor.cpp
 *******************************************************************************/
 
 #include "Sensor.h"
 #include "Image.h"
 #include "Flight.h"
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 // Constructors and destructors
 //
@@ -42,17 +46,17 @@ void Sensor::setId(int newId)
 /*
 void Sensor::setFocalDistance(double newFocalDistance)
 {
-	focalDistance = newFocalDistance;
+ focalDistance = newFocalDistance;
 }
 
 void Sensor::setFocalDistanceSigma(double newFocalDistanceSigma)
 {
-	focalDistanceSigma = newFocalDistanceSigma;
+ focalDistanceSigma = newFocalDistanceSigma;
 }
 
-void Sensor::setPrincipalPointCoordinates(AnalogImageSpaceCoordinate newCoordinates)
+void Sensor::setPrincipalPointCoordinates(DetectorSpaceCoordinate newCoordinates)
 {
-	principalPointCoordinates = newCoordinates;
+ principalPointCoordinates = newCoordinates;
 }
 */
 void Sensor::setDescription(string newDescription)
@@ -72,17 +76,17 @@ int Sensor::getId()
 /*
 double Sensor::getFocalDistance()
 {
-	return focalDistance;
+ return focalDistance;
 }
 
 double Sensor::getFocalDistanceSigma()
 {
-	return focalDistanceSigma;
+ return focalDistanceSigma;
 }
 
-AnalogImageSpaceCoordinate Sensor::getPrincipalPointCoordinates()
+DetectorSpaceCoordinate Sensor::getPrincipalPointCoordinates()
 {
-	return principalPointCoordinates;
+ return principalPointCoordinates;
 }
 */
 string Sensor::getDescription()
@@ -172,3 +176,7 @@ string Sensor::objectType(void)
 	return "Sensor";
 }
 
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

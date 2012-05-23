@@ -1,8 +1,13 @@
 /**************************************************************************
-						SensorWithKnowDimensions.cpp
+	  SensorWithKnowDimensions.cpp
 **************************************************************************/
 
 #include "SensorWithKnowDimensions.h"
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 // Constructors
 //
@@ -67,14 +72,14 @@ Matrix SensorWithKnowDimensions::forgeLb()
 	double columnsSize = frameColumns * pixelSize / 1000.0;
 	Matrix Lb(8,1);
 	/* This is wrong, I think... - Rafael on 11/02/2011
-	Lb.set(1,1,-rowsSize/2);
-	Lb.set(2,1,columnsSize/2);
-	Lb.set(3,1,rowsSize/2);
-	Lb.set(4,1,columnsSize/2);
-	Lb.set(5,1,rowsSize/2);
-	Lb.set(6,1,-columnsSize/2);
-	Lb.set(7,1,-rowsSize/2);
-	Lb.set(8,1,-columnsSize/2);*/
+ Lb.set(1,1,-rowsSize/2);
+ Lb.set(2,1,columnsSize/2);
+ Lb.set(3,1,rowsSize/2);
+ Lb.set(4,1,columnsSize/2);
+ Lb.set(5,1,rowsSize/2);
+ Lb.set(6,1,-columnsSize/2);
+ Lb.set(7,1,-rowsSize/2);
+ Lb.set(8,1,-columnsSize/2);*/
 	Lb.set(1,1,-columnsSize/2);
 	Lb.set(2,1,rowsSize/2);
 	Lb.set(3,1,columnsSize/2);
@@ -115,7 +120,7 @@ bool SensorWithKnowDimensions::is(string s)
 void SensorWithKnowDimensions::xmlSetData(string xml)
 {
 	EDomElement root(xml);
-        id = Conversion::stringToInt(root.attribute("key"));
+	id = Conversion::stringToInt(root.attribute("key"));
 	sensorId = root.elementByTagName("sensorId").toString();
 	geometry = root.elementByTagName("geometry").toString();
 	detector = root.elementByTagName("detector").toString();
@@ -128,7 +133,7 @@ void SensorWithKnowDimensions::xmlSetData(string xml)
 	for (unsigned int i = 0; i < xmlSpectralRanges.size(); i++)
 	{
 		SpectralRange* spec = new SpectralRange;
-                spec->band = Conversion::stringToInt(xmlSpectralRanges.at(i).attribute("band"));
+		spec->band = Conversion::stringToInt(xmlSpectralRanges.at(i).attribute("band"));
 		spec->inferiorLimit = xmlSpectralRanges.at(i).elementByTagName("inferiorLimit").toDouble();
 		spec->superiorLimit = xmlSpectralRanges.at(i).elementByTagName("superiorLimit").toDouble();
 		spectralRanges.push_back(*spec);
@@ -184,7 +189,7 @@ void SensorWithKnowDimensions::xmlSetData(string xml)
 string SensorWithKnowDimensions::xmlGetData()
 {
 	stringstream result;
-        result << "<sensor key=\"" << Conversion::intToString(id) << "\">\n";
+	result << "<sensor key=\"" << Conversion::intToString(id) << "\">\n";
 	result << "<sensorId>" << sensorId << "</sensorId>\n";
 	result << "<type>\n";
 	result << "<geometry>" << geometry << "</geometry>\n";
@@ -195,9 +200,9 @@ string SensorWithKnowDimensions::xmlGetData()
 	result << "<spectralRanges uom=\"" << spectralRangesUnit << "\">\n";
 	for (unsigned int i = 0; i < spectralRanges.size(); i++)
 	{
-                result << "<spectralRange band=\"" << Conversion::intToString(spectralRanges.at(i).band) << "\">\n";
-                result << "<inferiorLimit>" << Conversion::doubleToString(spectralRanges.at(i).inferiorLimit) << "</inferiorLimit>\n";
-                result << "<superiorLimit>" << Conversion::doubleToString(spectralRanges.at(i).superiorLimit) << "</superiorLimit>\n";
+		result << "<spectralRange band=\"" << Conversion::intToString(spectralRanges.at(i).band) << "\">\n";
+		result << "<inferiorLimit>" << Conversion::doubleToString(spectralRanges.at(i).inferiorLimit) << "</inferiorLimit>\n";
+		result << "<superiorLimit>" << Conversion::doubleToString(spectralRanges.at(i).superiorLimit) << "</superiorLimit>\n";
 		result << "</spectralRange>\n";
 	}
 	result << "</spectralRanges>\n";
@@ -208,22 +213,22 @@ string SensorWithKnowDimensions::xmlGetData()
 	result << "<expiration>" << calibrationCertificateExpiration << "</expiration>\n";
 	result << "</calibrationCertificate>\n";
 	result << "<focalDistance uom=\"" << focalDistanceUnit << "\">\n";
-        result << "<value>" << Conversion::doubleToString(focalDistance) << "</value>\n";
+	result << "<value>" << Conversion::doubleToString(focalDistance) << "</value>\n";
 	if (focalDistanceSigma == 1.0)
 		result << "<sigma>Not Available</sigma>\n";
 	else
-                result << "<sigma>" << Conversion::doubleToString(focalDistanceSigma) << "</sigma>\n";
+		result << "<sigma>" << Conversion::doubleToString(focalDistanceSigma) << "</sigma>\n";
 	result << "</focalDistance>\n";
 	result << "<distortionCoefficients>\n";
 	result << "<radialSymmetric>\n";
 	for (unsigned int i = 0; i < rsCoefficients.size(); i++)
 	{
 		result << "<k" << i << ">\n";
-                result << "<value>" << Conversion::doubleToString(rsCoefficients.at(i).value) << "</value>\n";
+		result << "<value>" << Conversion::doubleToString(rsCoefficients.at(i).value) << "</value>\n";
 		if (rsCoefficients.at(i).sigma == 1.0)
 			result << "<sigma>Not Available</sigma>\n";
 		else
-                        result << "<sigma>" << Conversion::doubleToString(rsCoefficients.at(i).sigma) << "</sigma>\n";
+			result << "<sigma>" << Conversion::doubleToString(rsCoefficients.at(i).sigma) << "</sigma>\n";
 		result << "</k" << i << ">\n";
 	}
 	result << "</radialSymmetric>\n";
@@ -231,11 +236,11 @@ string SensorWithKnowDimensions::xmlGetData()
 	for (unsigned int i = 0; i < dCoefficients.size(); i++)
 	{
 		result << "<P" << i+1 << ">\n";
-                result << "<value>" << Conversion::doubleToString(dCoefficients.at(i).value) << "</value>\n";
+		result << "<value>" << Conversion::doubleToString(dCoefficients.at(i).value) << "</value>\n";
 		if (dCoefficients.at(i).sigma == 1.0)
 			result << "<sigma>Not Available</sigma>\n";
 		else
-                        result << "<sigma>" << Conversion::doubleToString(dCoefficients.at(i).sigma) << "</sigma>\n";
+			result << "<sigma>" << Conversion::doubleToString(dCoefficients.at(i).sigma) << "</sigma>\n";
 		result << "</P" << i+1 << ">\n";
 	}
 	result << "</decentered>\n";
@@ -256,3 +261,8 @@ string SensorWithKnowDimensions::xmlGetData()
 
 // Other methods
 //
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br

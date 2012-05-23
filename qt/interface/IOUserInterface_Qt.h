@@ -3,13 +3,19 @@
 
 #include "ui_IOForm.h"
 #include "IOUserInterface.h"
-#include "ImageView.h"
+//#include "ImageView.h"
+#include "ImageViewers.h"
 #include "LoadingScreen.h"
 
 #include <QPoint>
 #include <QGridLayout>
 #include <QPushButton>
 #include <QStandardItemModel>
+
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
 
 class IOUserInterface_Qt : public QMainWindow, public Ui::IOMainWindow, public IOUserInterface
 {
@@ -19,7 +25,7 @@ public:
 
 public slots:
 	virtual void informState();
-	virtual void receiveMark(QPoint p);
+	virtual void receiveMark(QPointF p);
 	virtual void makeRepaint();
 	virtual void activeSetMode();
 	virtual void activePanMode();
@@ -35,7 +41,9 @@ protected:
 	IOUserInterface_Qt(IOManager* manager, QWidget* parent = 0, Qt::WindowFlags fl = Qt::Window);
 	~IOUserInterface_Qt();
 	QWidget *windowReport;
-	ImageView *myImageView;
+	//ImageView *oldImageView;
+	Marker *mark;
+	SingleViewer *imageView;
 	QGridLayout *imageLayout;
 	QStandardItemModel *points;
 	int selectedPoint;
@@ -48,7 +56,7 @@ protected slots:
 
 private:
 	void init();
-	bool measureMark(int id, int col, int lin);
+	bool measureMark(int id, double col, double lin);
 
 public:
 	static IOUserInterface_Qt* instance(IOManager* manager);
@@ -57,5 +65,10 @@ public:
 	bool exec();
 
 };
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
 
 #endif // IOUSERINTERFACE_QT_H

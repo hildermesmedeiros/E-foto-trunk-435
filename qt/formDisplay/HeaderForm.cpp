@@ -1,5 +1,10 @@
 #include "HeaderForm.h"
 
+namespace br {
+namespace uerj {
+namespace eng {
+namespace efoto {
+
 HeaderForm::HeaderForm(QWidget *parent) : AbstractForm(parent)
 {
 	setupUi(this);
@@ -9,7 +14,7 @@ HeaderForm::HeaderForm(QWidget *parent) : AbstractForm(parent)
 
 void HeaderForm::fillvalues(string values)
 {
-        cleanForm();
+	cleanForm();
 	EDomElement ede(values);
 	lineEditName->setText(QString::fromUtf8(ede.elementByTagName("name").toString().c_str()));
 	textEditDescription->setPlainText(QString::fromUtf8(ede.elementByTagName("description").toString().c_str()));
@@ -27,22 +32,22 @@ void HeaderForm::fillvalues(string values)
 
 string HeaderForm::getvalues()
 {
-        string xmlString;
+	string xmlString;
 	stringstream auxStream;
-		auxStream << "<projectHeader>\n";
-		auxStream << "<name>" << lineEditName->text().toUtf8().data() << "</name>\n";
-		auxStream << "<description>" << textEditDescription->toPlainText().toUtf8().data() << "</description>\n";
-		if (lineEditFilePath->text().isEmpty())
-			auxStream << "<filePath>.</filePath>\n";
-		else
-			auxStream << "<filePath>" << lineEditFilePath->text().toUtf8().data() << "</filePath>\n";
-		auxStream << "<fileName>" << lineEditFileName->text().toUtf8().data() << "</fileName>\n";
-		auxStream << "<creation>" << dateTimeEditCreationDate->dateTime().toString(Qt::ISODate).toUtf8().data() << "</creation>\n";
-		auxStream << "<modification>" << dateTimeEditModificationDate->dateTime().toString(Qt::ISODate).toUtf8().data() << "</modification>\n";
-		auxStream << "<owner>" << lineEditOwner->text().toUtf8().data() << "</owner>\n";
-		auxStream << "<aims>" << lineEditAims->text().toUtf8().data() << "</aims>\n";
-		auxStream << "<context>" << lineEditContext->text().toUtf8().data() << "</context>\n";
-		auxStream << "</projectHeader>";
+	auxStream << "<projectHeader>\n";
+	auxStream << "<name>" << lineEditName->text().toUtf8().data() << "</name>\n";
+	auxStream << "<description>" << textEditDescription->toPlainText().toUtf8().data() << "</description>\n";
+	if (lineEditFilePath->text().isEmpty())
+		auxStream << "<filePath>.</filePath>\n";
+	else
+		auxStream << "<filePath>" << lineEditFilePath->text().toUtf8().data() << "</filePath>\n";
+	auxStream << "<fileName>" << lineEditFileName->text().toUtf8().data() << "</fileName>\n";
+	auxStream << "<creation>" << dateTimeEditCreationDate->dateTime().toString(Qt::ISODate).toUtf8().data() << "</creation>\n";
+	auxStream << "<modification>" << dateTimeEditModificationDate->dateTime().toString(Qt::ISODate).toUtf8().data() << "</modification>\n";
+	auxStream << "<owner>" << lineEditOwner->text().toUtf8().data() << "</owner>\n";
+	auxStream << "<aims>" << lineEditAims->text().toUtf8().data() << "</aims>\n";
+	auxStream << "<context>" << lineEditContext->text().toUtf8().data() << "</context>\n";
+	auxStream << "</projectHeader>";
 	xmlString = auxStream.str();
 	return xmlString;
 }
@@ -76,26 +81,31 @@ void HeaderForm::focusInEvent(QFocusEvent *)
 
 void HeaderForm::cleanForm()
 {
-       lineEditName->clear();
-       lineEditContext->clear();
-       lineEditAims->clear();
-       textEditDescription->clear();
-       lineEditOwner->clear();
-       lineEditFilePath->clear();
-       lineEditFileName->clear();
-       dateTimeEditCreationDate->clear();
-       dateTimeEditModificationDate->clear();
+	lineEditName->clear();
+	lineEditContext->clear();
+	lineEditAims->clear();
+	textEditDescription->clear();
+	lineEditOwner->clear();
+	lineEditFilePath->clear();
+	lineEditFileName->clear();
+	dateTimeEditCreationDate->clear();
+	dateTimeEditModificationDate->clear();
 }
 
 void HeaderForm::setFormLocale(QLocale locale)
 {
-    lineEditName->setLocale(locale);
-    lineEditContext->setLocale(locale);
-    lineEditAims->setLocale(locale);
-    textEditDescription->setLocale(locale);
-    lineEditOwner->setLocale(locale);
-    lineEditFilePath->setLocale(locale);
-    lineEditFileName->setLocale(locale);
-    dateTimeEditCreationDate->setLocale(locale);
-    dateTimeEditModificationDate->setLocale(locale);
+	lineEditName->setLocale(locale);
+	lineEditContext->setLocale(locale);
+	lineEditAims->setLocale(locale);
+	textEditDescription->setLocale(locale);
+	lineEditOwner->setLocale(locale);
+	lineEditFilePath->setLocale(locale);
+	lineEditFileName->setLocale(locale);
+	dateTimeEditCreationDate->setLocale(locale);
+	dateTimeEditModificationDate->setLocale(locale);
 }
+
+} // namespace efoto
+} // namespace eng
+} // namespace uerj
+} // namespace br
