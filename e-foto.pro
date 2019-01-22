@@ -5,14 +5,25 @@
 TEMPLATE = app
 TARGET = e-foto
 
+QT += widgets
+
+Model =  c/photogrammetry c/infrastructure c/xml_definitions c/imageProcessing c/shapelib
+
+View = c/interface qt/interface qt/imageDisplay qt/infrastructure qt/formDisplay
+
+Controler = c/control
+OTHER_FILES += \
+               build-common.pri
+include(build-common.pri)
+
 INCLUDEPATH += . \
-			   c/control \
+                           c/control \
 			   c/photogrammetry \
 			   c/infrastructure \
-			   c/xml_definitions \
-                           c/interface \
+                           c/xml_definitions \
                            c/imageProcessing \
                            c/shapelib \
+                           c/interface \
 			   qt/interface \
 			   qt/imageDisplay \
 			   qt/infrastructure \
@@ -235,7 +246,7 @@ SOURCES += c/control/DEMManager.cpp \
 		   c/photogrammetry/SpatialIntersection.cpp \
 		   c/photogrammetry/SpatialRessection.cpp \
 		   c/photogrammetry/StereoPair.cpp \
-           c/photogrammetry/Terrain.cpp \
+                   c/photogrammetry/Terrain.cpp \
 		   c/xml_definitions/XMLAerial.cpp \
 		   c/xml_definitions/XMLFlight.cpp \
 		   c/xml_definitions/XMLProjectHeader.cpp \
@@ -284,70 +295,3 @@ SOURCES += c/control/DEMManager.cpp \
 
 RESOURCES += qt/resource/resource.qrc
 
-# Build Settings
-DESTDIR = build/bin
-OBJECTS_DIR = build/temp/obj
-MOC_DIR = build/temp/moc
-UI_DIR = build/temp/ui
-RCC_DIR = build/temp/rcc
-QT += opengl
-QMAKE_CXXFLAGS += -std=c++11 -Wall 
-#QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra -pedantic
-#CONFIG += c++11
-
-# CXX=g++-4.9 is workaround for compiler missing <stdlib.h>
-#CXX=g++-4.9
-
-#Rod
-# With C++11 support
-#greaterThan(QT_MAJOR_VERSION, 4){
-#    CONFIG += c++11
-#} else {
-#    QMAKE_CXXFLAGS += -std=c++11
-#    #QMAKE_CXXFLAGS += -std=c++0x
-#}
-
-# Set libshape usage
-unix: LIBS += -lGL -lGLU -lshp
-unix: LIBS += -L/usr/lib/x86_64-linux-gnu/ -lshp
-unix {
-    INCLUDEPATH += /usr/include/
-    DEPENDPATH += /usr/include/
-}
-
-
-# Set gdal usage
-
-win64:CONFIG(release, debug|release): LIBS += -L/mingw64/lib/ -lgdal
-else:win64:CONFIG(debug, debug|release): LIBS += -L/mingw64/lib/ -lgdal
-else:win32:CONFIG(release, debug|release): LIBS += -L/mingw32/lib/ -lgdal
-else:win32:CONFIG(debug, debug|release): LIBS += -L/mingw32/lib/ -lgdal
-else:unix: LIBS += -L/usr/include/gdal -lgdal
-
-win32 {
-    INCLUDEPATH += /mingw32/include
-    DEPENDPATH += /mingw32/include
-}
-win64 {
-    INCLUDEPATH += /mingw64/include
-    DEPENDPATH += /mingw64/include
-}
-unix {
-    INCLUDEPATH += /usr/include/gdal
-    DEPENDPATH += /usr/include/gdal
-}
-
-# e-foto icon
-RC_FILE = efotoIcon.rc
-
-# install settings
-unix{
-        DEFINES += unix
-	target.path = /usr/bin
-	desk.path = /usr/share/applications
-	desk.files += efoto.desktop
-	icon.path = /usr/share/applications/pixmaps
-	icon.files += efoto-icon.png
-
-	INSTALLS += target desk icon
-}
