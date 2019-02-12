@@ -161,7 +161,7 @@ PTUserInterface* PTManager::getInterface()
 
 bool PTManager::exec()
 {
-	if (efotoManager != NULL && mySensor != NULL && /*myFlight != NULL &&*/ listAllImages.size()> 1 && listOis.size()>1)
+    if (efotoManager != nullptr && mySensor != nullptr && /*myFlight != NULL &&*/ listAllImages.size()> 1 && listOis.size()>1)
 	{
 		qApp->processEvents();
 		if (efotoManager->getInterfaceType().compare("Qt") == 0)

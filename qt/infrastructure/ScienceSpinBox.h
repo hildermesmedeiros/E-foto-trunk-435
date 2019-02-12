@@ -1,9 +1,9 @@
 #ifndef SCIENCESPINBOX
 #define SCIENCESPINBOX
 
-#include <QtGui/QDoubleSpinBox>
+#include <QtWidgets/QDoubleSpinBox>
 #include <QtGui/QDoubleValidator>
-#include <QtGui/QLineEdit>
+#include <QtWidgets/QLineEdit>
 #include <QtGui/QMouseEvent>
 #include <QtCore/QVariant>
 #include <QtCore/QDebug>
@@ -23,7 +23,7 @@ class ScienceSpinBox : public QDoubleSpinBox
 {
 	Q_OBJECT
 public:
-    explicit ScienceSpinBox(QWidget * parent = 0);
+    explicit ScienceSpinBox(QWidget * parent = nullptr);
 
 	int decimals() const;
 	void setDecimals(int value);

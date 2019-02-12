@@ -45,9 +45,9 @@ namespace efoto {
 
 ProjectManager::ProjectManager()
 {
-	this->manager = NULL;
-	this->treeModel = NULL;
-	this->updater = NULL;
+    this->manager = nullptr;
+    this->treeModel = nullptr;
+    this->updater = nullptr;
     this->savedIn = "";
 	//loadSettings();
 }
@@ -55,16 +55,16 @@ ProjectManager::ProjectManager()
 ProjectManager::ProjectManager(EFotoManager* manager)
 {
 	this->manager = manager;
-	this->treeModel = NULL;
-	this->updater = NULL;
+    this->treeModel = nullptr;
+    this->updater = nullptr;
     this->savedIn = "";
 }
 
 ProjectManager::~ProjectManager()
 {
-	if (treeModel != NULL)
+    if (treeModel != nullptr)
 		delete treeModel;
-	if (updater != NULL)
+    if (updater != nullptr)
 		delete updater;
 }
 
@@ -73,7 +73,7 @@ ProjectManager::~ProjectManager()
 
 bool ProjectManager::connectDatabase()
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 
 	}
@@ -82,7 +82,7 @@ bool ProjectManager::connectDatabase()
 
 bool ProjectManager::disconnectDatabase()
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 
 	}
@@ -91,7 +91,7 @@ bool ProjectManager::disconnectDatabase()
 
 bool ProjectManager::newProject(std::string filename)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
         std::string xmlData = "";
 		xmlData += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -103,8 +103,8 @@ bool ProjectManager::newProject(std::string filename)
 		xmlData += "<projectHeader>\n";
 		xmlData += "<name></name>\n";
 		xmlData += "<description></description>\n";
-
-		int i = filename.rfind('/');
+        //Hildermes mudei de int para auto.
+       auto i = filename.rfind('/');
 
         std::string filePath = "<filePath>"+filename.substr(0,i)+"</filePath>\n";
         std::string fileName = "<fileName>"+filename.erase(0,i+1)+"</fileName>\n";
@@ -154,7 +154,7 @@ bool ProjectManager::newProject(std::string filename)
 
 		manager->xmlSetData(xmlData);
 
-		if (treeModel != NULL)
+        if (treeModel != nullptr)
 			delete treeModel;
 
 		treeModel = new ETreeModel(EDomElement(xmlData).elementByTagName("efotoPhotogrammetricProject").getContent());
@@ -166,7 +166,7 @@ bool ProjectManager::newProject(std::string filename)
 
 bool ProjectManager::loadProject()
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 
 	}
@@ -175,7 +175,7 @@ bool ProjectManager::loadProject()
 
 bool ProjectManager::saveProject()//???
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 
 	}
@@ -184,14 +184,14 @@ bool ProjectManager::saveProject()//???
 
 bool ProjectManager::loadFile(const char *filename)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
         std::stringstream myData;
         std::ifstream myFile(filename);
-		if (updater != NULL)
+        if (updater != nullptr)
 		{
 			delete updater;
-			updater = NULL;
+            updater = nullptr;
 		}
 		if (myFile.is_open())
 		{
@@ -221,7 +221,7 @@ bool ProjectManager::loadFile(const char *filename)
 			manager->xmlSetData(xmlData);
 
 
-			if (treeModel != NULL)
+            if (treeModel != nullptr)
 				delete treeModel;
 
 			treeModel = new ETreeModel(EDomElement(xmlData).elementByTagName("efotoPhotogrammetricProject").getContent());
@@ -236,7 +236,7 @@ bool ProjectManager::loadFile(const char *filename)
 
 bool ProjectManager::saveFile(std::string filename)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
         std::ofstream myFile (filename.c_str());
 		if (myFile.is_open())
@@ -255,7 +255,7 @@ bool ProjectManager::saveFile(std::string filename)
 
 int ProjectManager::informFileVersionError()
 {
-	if (manager != NULL && updater != NULL)
+    if (manager != nullptr && updater != nullptr)
 	{
 		return updater->getError();
 	}
@@ -264,13 +264,13 @@ int ProjectManager::informFileVersionError()
 
 bool ProjectManager::addComponent(std::string data, std::string parent)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 		EDomElement newXml(manager->xmlGetData());
 		newXml.addChildAtTagName(parent, data);
 		manager->xmlSetData(newXml.getContent());
 
-		if (treeModel != NULL)
+        if (treeModel != nullptr)
 			delete treeModel;
 		treeModel = new ETreeModel(newXml.elementByTagName("efotoPhotogrammetricProject").getContent());
 		return true;
@@ -280,7 +280,7 @@ bool ProjectManager::addComponent(std::string data, std::string parent)
 
 bool ProjectManager::removeComponent(std::string type, int id)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 		EDomElement newXml(manager->xmlGetData());
 		if (type == "Sensor")
@@ -297,7 +297,7 @@ bool ProjectManager::removeComponent(std::string type, int id)
 			newXml.replaceChildByTagAtt("imageEO", "image_key", Conversion::intToString(id), "");
 		manager->xmlSetData(newXml.getContent());
 
-		if (treeModel != NULL)
+        if (treeModel != nullptr)
 			delete treeModel;
 		treeModel = new ETreeModel(newXml.elementByTagName("efotoPhotogrammetricProject").getContent());
 		return true;
@@ -307,7 +307,7 @@ bool ProjectManager::removeComponent(std::string type, int id)
 
 bool ProjectManager::editComponent(std::string type, std::string data)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 		EDomElement newXml(manager->xmlGetData());
 		if (type == "Header")
@@ -316,7 +316,7 @@ bool ProjectManager::editComponent(std::string type, std::string data)
 			newXml.replaceChildByTagName("terrain", data);
 		manager->xmlSetData(newXml.getContent());
 
-		if (treeModel != NULL)
+        if (treeModel != nullptr)
 			delete treeModel;
 		treeModel = new ETreeModel(newXml.elementByTagName("efotoPhotogrammetricProject").getContent());
 		return true;
@@ -326,7 +326,7 @@ bool ProjectManager::editComponent(std::string type, std::string data)
 
 bool ProjectManager::editComponent(std::string type, int id, std::string data)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 		EDomElement newXml(manager->xmlGetData());
 		if (type == "Sensor")
@@ -343,7 +343,7 @@ bool ProjectManager::editComponent(std::string type, int id, std::string data)
 			newXml.replaceChildByTagAtt("imageEO", "image_key", Conversion::intToString(id), data);
 		manager->xmlSetData(newXml.getContent());
 
-		if (treeModel != NULL)
+        if (treeModel != nullptr)
 			delete treeModel;
 		treeModel = new ETreeModel(newXml.elementByTagName("efotoPhotogrammetricProject").getContent());
 		return true;
@@ -353,22 +353,22 @@ bool ProjectManager::editComponent(std::string type, int id, std::string data)
 
 EObject* ProjectManager::viewComponent(std::string type, int id)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 		if (type == "Sensor")
-			return (EObject*) manager->instanceSensor(id);
+            return dynamic_cast< EObject* >( manager->instanceSensor(id) );
 		else if (type == "Flight")
-			return (EObject*) manager->instanceFlight(id);
+            return dynamic_cast< EObject* >( manager->instanceFlight(id) );
 		else if (type == "Image")
-			return (EObject*) manager->instanceImage(id);
+            return dynamic_cast< EObject* >( manager->instanceImage(id) );
 		else if (type == "Point")
-			return (EObject*) manager->instancePoint(id);
+            return dynamic_cast< EObject* >( manager->instancePoint(id) );
 		else if (type == "IO")
-			return (EObject*) manager->instanceIO(id);
+            return dynamic_cast< EObject* >( manager->instanceIO(id) );
 		else if (type == "EO")
-			return (EObject*) manager->instanceEO(id);
+            return dynamic_cast< EObject* >( manager->instanceEO(id) );
 	}
-	return NULL;
+    return nullptr;
 }
 
 ETreeModel* ProjectManager::getTreeModel()
@@ -382,14 +382,19 @@ std::deque<int> ProjectManager::listImageKeys()
 	for (unsigned int i = 0; i < treeModel->getChild(4).countChildren(); i++)
 		result.push_back(treeModel->idAt(4, i));
 	return result;
+
 }
 
 std::deque<std::string> ProjectManager::listImages()
 {
     std::deque<std::string> result;
+    if(treeModel != nullptr){//adicionei
 	for (unsigned int i = 0; i < treeModel->getChild(4).countChildren(); i++)
 		result.push_back(treeModel->dataAt(4, i));
-	return result;
+    return result;
+    }else{//adicionei
+        return result;//do nothing,adicionei
+    }//adicionei
 }
 
 int ProjectManager::getImageId(std::string imageName)
@@ -412,7 +417,7 @@ int ProjectManager::getFreePointId()
 
 bool ProjectManager::startModule(std::string module, int image)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 		if (module.compare("InteriorOrientation") == 0)
 			manager->setNextModule(EFotoManager::NEXT_IO);
@@ -439,7 +444,7 @@ bool ProjectManager::startModule(std::string module, int image)
 
 bool ProjectManager::exec(std::string filename)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 		if (manager->getInterfaceType().compare("Qt") == 0)
 		{
@@ -448,7 +453,7 @@ bool ProjectManager::exec(std::string filename)
 				newInterface->loadFile(filename);
 			myInterface = newInterface;
 		}
-		if (myInterface != NULL)
+        if (myInterface != nullptr)
 		{
 			return myInterface->exec();
 		}
@@ -459,9 +464,9 @@ bool ProjectManager::exec(std::string filename)
 
 bool ProjectManager::reload()
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
-		if (myInterface != NULL)
+        if (myInterface != nullptr)
 		{
 			manager->getSavedState();
 			return myInterface->exec();
@@ -483,7 +488,7 @@ std::string ProjectManager::getXml(std::string tagname, std::string att, std::st
 
 bool ProjectManager::getSavedState()
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 		return manager->getSavedState();
 	}
@@ -492,7 +497,7 @@ bool ProjectManager::getSavedState()
 
 bool ProjectManager::makeSPFile(std::string filename, int image1, int image2)
 {
-	if (manager != NULL)
+    if (manager != nullptr)
 	{
 		if (image1 == image2 || filename == "")
 		{
@@ -505,13 +510,13 @@ bool ProjectManager::makeSPFile(std::string filename, int image1, int image2)
 
 		InteriorOrientation* io1 = manager->instanceIO(image1);
 		InteriorOrientation* io2 = manager->instanceIO(image2);
-		SpatialRessection* sr1 = (SpatialRessection*)manager->instanceEO(image1);
-		SpatialRessection* sr2 = (SpatialRessection*)manager->instanceEO(image2);
-		SensorWithFiducialMarks* sensor = (SensorWithFiducialMarks*)manager->instanceSensor(manager->instanceImage(image1)->getSensorId());
+        SpatialRessection* sr1 = dynamic_cast< SpatialRessection* >( manager->instanceEO(image1) );
+        SpatialRessection* sr2 = dynamic_cast< SpatialRessection* >( manager->instanceEO(image2) );
+        SensorWithFiducialMarks* sensor = dynamic_cast< SensorWithFiducialMarks* >( manager->instanceSensor(manager->instanceImage(image1)->getSensorId()) );
 		Flight* flight = manager->instanceFlight(manager->instanceImage(image1)->getFlightId());
 		Terrain* terrain = manager->instanceTerrain();
 
-		if (io1 == NULL || io2 == NULL || sr1 == NULL || sr2 == NULL || sensor == NULL || flight == NULL || terrain == NULL)
+        if (io1 == nullptr || io2 == nullptr || sr1 == nullptr || sr2 == nullptr || sensor == nullptr || flight == nullptr || terrain == nullptr)
 		{
 			return false;
 		}
@@ -597,7 +602,7 @@ void ProjectManager::saveSettings(const char *filename)
 
 bool ProjectManager::execAutosave()
 {
-    if (myInterface != NULL)
+    if (myInterface != nullptr)
         myInterface->saveFile();
     else
         return false;

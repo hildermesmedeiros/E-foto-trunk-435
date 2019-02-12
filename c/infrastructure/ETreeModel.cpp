@@ -174,6 +174,7 @@ std::deque<ETreeNode> ETreeModel::getChildren()
 
 ETreeNode ETreeModel::getChild(unsigned int index)
 {
+
 	if (index < children.size())
 		return children.at(index);
 	else

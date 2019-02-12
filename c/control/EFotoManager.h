@@ -24,7 +24,7 @@
 
 #include "Project.h"
 #include "XmlUpdater.h"
-
+#include <memory>
 namespace br {
 namespace uerj {
 namespace eng {
@@ -63,7 +63,7 @@ private:
 
     ProjectManager* project;
 	IOManager* interiorOrientation;
-	SRManager* spatialRessection;
+    SRManager* spatialRessection;
 	PTManager* fotoTri;
 	DEMManager* dem;
 	OrthoManager* ortho;

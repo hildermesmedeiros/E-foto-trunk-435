@@ -41,6 +41,7 @@
 #include <sstream>
 #include <ConvertionsSystems.h>
 
+#include <EFotoManager.h>
 namespace br {
 namespace uerj {
 namespace eng {
@@ -53,13 +54,13 @@ ProjectUserInterface_Qt::ProjectUserInterface_Qt(ProjectManager* manager, QWidge
 
     //  Inicia variaveis
     this->manager = manager;
-    this->currentForm = NULL;
+    this->currentForm = nullptr;
     this->currentItemId = 0;
     this->editState = false;
     this->addNewState = false;
     this->changeModule = false;
     this->treeItems.clear();
-    this->enableExecuteMenu(false);
+    this->enableExecuteMenu(true);// hildermes: quem retornar esse cara?
     actionSave_file->setEnabled(false);
     actionSave_file_as->setEnabled(false);
 
@@ -382,7 +383,7 @@ void ProjectUserInterface_Qt::loadFile(std::string filenameAtStart)
 
             QString imagesMissing="";
             int contMissings=0;
-            for (int i=0 ;i < (int)imagesEdom.size() ;i++)
+            for (int i=0 ;i < static_cast< int >( imagesEdom.size() );i++)
             {
                 QString imagesName(imagesEdom.at(i).elementByTagName("filePath").toString().append("/").c_str());
                 dirImage.setCurrent(imagesName);
@@ -442,7 +443,7 @@ void ProjectUserInterface_Qt::loadFile(std::string filenameAtStart)
         }
         else
         {
-            QMessageBox* alert = NULL;
+            QMessageBox* alert = nullptr;
             switch (manager->informFileVersionError())
             {
             case 0:
@@ -566,6 +567,7 @@ void ProjectUserInterface_Qt::executeIO()
     bool ok;
     QStringList items;
     std::deque<std::string> strItems = manager->listImages();
+    if (!strItems.empty()){//adicionei
     for (unsigned int i = 0; i < strItems.size(); i++)
         items << strItems.at(i).c_str();
     QString chosen = QInputDialog::getItem(this, tr("Select your image!"), tr("Image name:"), items, 0, false, &ok);
@@ -583,6 +585,9 @@ void ProjectUserInterface_Qt::executeIO()
             changeModule = false;
         }
     }
+    }else{//adicionei
+       //Do nothing
+    }//adicionei
 }
 
 void ProjectUserInterface_Qt::executeSR()
@@ -590,6 +595,7 @@ void ProjectUserInterface_Qt::executeSR()
     bool ok;
     QStringList items;
     std::deque<std::string> strItems = manager->listImages();
+    if(!strItems.empty()){//adicionei
     for (unsigned int i = 0; i < strItems.size(); i++)
         items << strItems.at(i).c_str();
     QString chosen = QInputDialog::getItem(this, tr("Select your image!"), tr("Image name:"), items, 0, false, &ok);
@@ -607,8 +613,10 @@ void ProjectUserInterface_Qt::executeSR()
             changeModule = false;
         }
     }
+}else{
+    //Do nothing
+    }//adicionei
 }
-
 void ProjectUserInterface_Qt::executeDEM()
 {
     changeModule = true;
@@ -655,6 +663,8 @@ void ProjectUserInterface_Qt::executePTReport()
 
 void ProjectUserInterface_Qt::executeFT()
 {
+    std::deque<std::string> strItems = manager->listImages();
+    if(!strItems.empty()){//adicionei
     changeModule = true;
     confirmToClose();
     LoadingScreen::instance().show();
@@ -662,7 +672,9 @@ void ProjectUserInterface_Qt::executeFT()
     this->close();
     manager->startModule("FotoTriangulation", 0);
     changeModule = false;
-
+    }else{
+        //Do nothing
+    }
 }
 
 void ProjectUserInterface_Qt::executeOrtho()
@@ -779,6 +791,7 @@ void ProjectUserInterface_Qt::exportSPFile()
     bool ok;
     QStringList items;
     std::deque<std::string> strItems = manager->listImages();
+    if(!strItems.empty()){
     for (unsigned int i = 0; i < strItems.size(); i++)
         items << strItems.at(i).c_str();
 
@@ -811,6 +824,9 @@ void ProjectUserInterface_Qt::exportSPFile()
                 msgBox.exec();
             }
         }
+    }
+    }else{
+
     }
 }
 
@@ -891,7 +907,7 @@ void ProjectUserInterface_Qt::updateTree()
 
     ETreeModel* etm = manager->getTreeModel();
 
-    for (int i = 0; i < (int)etm->countChildren(); i++)
+    for (int i = 0; i < static_cast< int >( etm->countChildren() ); i++)
     {
         if (i < treeItems.size())
         {
@@ -908,7 +924,7 @@ void ProjectUserInterface_Qt::updateTree()
             else if (etm->dataAt(i) == "points")
                 treeItems.at(i)->setText(0, tr("Points"));
             if (!(etm->dataAt(i) == "projectHeader" || etm->dataAt(i) == "terrain" || etm->dataAt(i) == "sensors" || etm->dataAt(i) == "flights"))
-                for (int j = 0; j < (int)etm->countGrandchildren(i); j++)
+                for (int j = 0; j < static_cast< int >( etm->countGrandchildren(i) ); j++)
                 {
                     if (j < treeItems.at(i)->childCount())
                     {
@@ -2129,7 +2145,7 @@ void ProjectUserInterface_Qt::importPointsFromTxt()
     loadWidget->show();
 
     std::string newPointXML;
-    for (int i=0; i<pointsList.length() && loadWidget!=NULL;i++)
+    for (int i=0; i<pointsList.length() && loadWidget!=nullptr;i++)
     {
         loading.setFormat(tr("%v/%m : %p%"));
         loading.setValue(i+1);
@@ -2592,7 +2608,7 @@ bool ProjectUserInterface_Qt::availableOE()
 */
 void ProjectUserInterface_Qt::updateCurrentForm()
 {
-    if(currentForm!=NULL)
+    if(currentForm!=nullptr)
     {
         if (currentForm== &headerForm)
             viewHeader();
@@ -2694,7 +2710,7 @@ void ProjectUserInterface_Qt::importPointsFromTxt2()
     loadWidget->show();
 
     std::string newPointXML;
-    for (int i=0; i<pointsList.length() && loadWidget!=NULL;i++)
+    for (int i=0; i<pointsList.length() && loadWidget!=nullptr;i++)
     {
         loading.setFormat(tr("%v/%m : %p%"));
         loading.setValue(i+1);
@@ -2787,7 +2803,7 @@ void ProjectUserInterface_Qt::deleteEmptyPoints()
 
     //stringstream allPoints;
     //int cont=0;
-    for (int i=0; i< (int)pnts.size();i++)
+    for (int i=0; i< static_cast< int >( pnts.size() );i++)
     {
         //		points.attribute();
         if (!pnts.at(i).hasTagName("imageCoordinates"))
@@ -2835,7 +2851,7 @@ void ProjectUserInterface_Qt::exportDigitalCoordinates()
         loading.setMinimumSize(300,30);
         loadWidget->show();
         std::deque<EDomElement> point=points.elementsByTagName("point");
-        for (int i=0; i<(int)point.size(); i++)
+        for (int i=0; i<static_cast< int >( point.size() ); i++)
         {
             loading.setFormat(tr("Point %v/%m : %p%"));
             loading.setValue(i);
@@ -2858,7 +2874,7 @@ std::string ProjectUserInterface_Qt::edomDigitalCoordinatesPointToTxt(EDomElemen
     EDomElement ede;
     QString gmlpos;
     bool ok;
-    for (int i=0; i<(int)digitalCoordinates.size();i++)
+    for (int i=0; i< static_cast< int >( digitalCoordinates.size() );i++)
     {
         ede=digitalCoordinates.at(i);
         gmlpos=ede.elementByTagName("gml:pos").toString().c_str();
@@ -3045,7 +3061,7 @@ void ProjectUserInterface_Qt::importOIDigitalMarks()
 
     std::string newOIXML;
     int imagescount=1;
-    for (int i=0; i<marksList.length() && loadWidget!=NULL;i+=4)
+    for (int i=0; i<marksList.length() && loadWidget!=nullptr;i+=4)
     {
         loading.setFormat(tr("%v/%m : %p%"));
 

@@ -61,11 +61,11 @@ SpatialRessection::SpatialRessection()
     insConverged = false;
     useDistortions = true;
 
-    if (myImage != NULL){
+    if (myImage != nullptr){
         rt = new RayTester(myImage);
     }
     else {
-        rt = NULL;
+        rt = nullptr;
     }
 
 }
@@ -81,11 +81,11 @@ SpatialRessection::SpatialRessection(int myImageId) // Constructor with ids only
     gnssConverged = false;
     insConverged = false;
     //  myImage = image(myImageId);
-    if (myImage != NULL){
+    if (myImage != nullptr){
         rt = new RayTester(myImage);
     }
     else {
-        rt = NULL;
+        rt = nullptr;
     }
     useDistortions = true;
 }
@@ -95,10 +95,10 @@ SpatialRessection::SpatialRessection(int myImageId) // Constructor with ids only
  */
 SpatialRessection::~SpatialRessection()
 {
-    if (rt != NULL)
+    if (rt != nullptr)
     {
         delete rt;
-        rt = NULL;
+        rt = nullptr;
     }
 }
 

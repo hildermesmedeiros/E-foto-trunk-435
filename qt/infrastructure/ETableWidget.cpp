@@ -23,8 +23,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include <QtGui>
-
+#include <QtWidgets>
+#include <memory>
 //#define MAX(a,b) (a<b) ? b : a
 //#define MIN(a,b) (a<b) ? a : b
 
@@ -37,14 +37,14 @@ ETableWidget::ETableWidget(QWidget *parent): QTableWidget(parent)
 {
 		//io= new Matrix(1,1);
 		currentSpinBoxRow=currentSpinBoxColumn=currentDoubleSpinBoxColumn=currentDoubleSpinBoxRow=-1;
-		installEventFilter(this);
-		setRowCount(0);
+        installEventFilter(this);
+        setRowCount(0);
 		setColumnCount(0);
 		setMode('f');
 		setDecimals(6);
 
-		horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-		verticalHeader()->setResizeMode(QHeaderView::Stretch);
+        horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
 		/*
 		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
@@ -74,8 +74,8 @@ ETableWidget::ETableWidget(Matrix values,char mode,int precision, QWidget *paren
 	setDecimals(precision);
 	setTableData(values,getMode(),getDecimals());
 
-	horizontalHeader()->setResizeMode(QHeaderView::Stretch);//novo
-	verticalHeader()->setResizeMode(QHeaderView::Stretch);
+    horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//novo
+    verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
 		// melhoramento na interface da tabela
 /*
@@ -105,8 +105,8 @@ ETableWidget::ETableWidget(Matrix values,char mode,int precision, QWidget *paren
 
 void ETableWidget::setTableData(Matrix values,char mode,int precision)
 {
-	horizontalHeader()->setResizeMode(QHeaderView::Stretch);//novo
-	verticalHeader()->setResizeMode(QHeaderView::Stretch);  //novo
+    horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//novo
+    verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);  //novo
 
 	setSelectionMode(QAbstractItemView::ContiguousSelection);
 	//falta tratamento para destruir antiga matrix se ela existir antes
@@ -214,33 +214,58 @@ void ETableWidget::autoCopy()
 
 bool ETableWidget::eventFilter(QObject *obj, QEvent *evento)
 {
-	if (evento->type()==QEvent::KeyPress)
+    switch( evento->type() )
+    {
+    case QEvent::KeyPress:
+        {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(evento);
+        keyPressEvent(keyEvent);
+        }
+        return true;
+    case QEvent::FocusIn:
+        {
+        QFocusEvent *focusInEvento = static_cast<QFocusEvent *>(evento);
+        focusInEvent(focusInEvento);
+        }
+        return true;
+    case QEvent::FocusOut:
+        {
+        QFocusEvent *focusOutEvento = static_cast<QFocusEvent *>(evento);
+        focusOutEvent(focusOutEvento);
+        }
+        return true;
+    default:
+        return false;
+    }
+    /*
+    if (evento->type() == QEvent::KeyPress)//the inferior stopped because it received a signal from the operating system. SIEGSEGV
 	{
-		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(evento);
-		keyPressEvent(keyEvent);
-		return true;
-	}else if (evento->type()==QEvent::FocusIn)
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(evento);
+        keyPressEvent(keyEvent);
+        return true;
+    }else if (evento->type() == QEvent::FocusIn)
 	{
 		QFocusEvent *focusInEvento = static_cast<QFocusEvent *>(evento);
 		focusInEvent(focusInEvento);
 		//emit focusReceived();
         return true;
-	}else if (evento->type()==QEvent::FocusOut)
+    }else if (evento->type() == QEvent::FocusOut)
 	{
 		QFocusEvent *focusOutEvento = static_cast<QFocusEvent *>(evento);
 		focusOutEvent(focusOutEvento);
 		return true;
-	}else /*if (evento->type()==QEvent::Resize)
+    }else /*if (evento->type()==QEvent::Resize)
 	{
 		QResizeEvent *resEvent= static_cast<QResizeEvent*>(evento);
 		resizeTable();
 		//resizeEvent(resEvent);
 		return true;
 	}else*/
-	{
-		return QTableWidget::eventFilter(obj,evento);
-	}
+    /*
+    { //Etable ou Qtable?
+        return ETableWidget::eventFilter(obj,evento);
 
+    }
 	/*
 	if (evento->type()==QEvent::MouseButtonRelease)
 	{
@@ -248,15 +273,15 @@ bool ETableWidget::eventFilter(QObject *obj, QEvent *evento)
 		mouseReleaseEvent(mouseEvent);
 		return true;
 	}*/
-
+    //Hildermes
 
 }
 
 void ETableWidget::keyPressEvent(QKeyEvent *event)
 {
-	if (event->modifiers()==Qt::ControlModifier)
+    if (event->modifiers() == Qt::ControlModifier)
 	{
-		if (event->key()==Qt::Key_C)
+        if (event->key() == Qt::Key_C)
 		{
 			autoCopy();
 		}

@@ -5,11 +5,11 @@
 #include <QWaitCondition>
 
 
-LoadingScreen* LoadingScreen::loadingScreenInstance = NULL;
+LoadingScreen* LoadingScreen::loadingScreenInstance = nullptr;
 
 LoadingScreen& LoadingScreen::instance()
 {
-	if (loadingScreenInstance == NULL)
+    if (loadingScreenInstance == nullptr)
 	{
 		loadingScreenInstance = new LoadingScreen;
 	}

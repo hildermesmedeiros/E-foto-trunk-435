@@ -41,6 +41,7 @@
 #include <QApplication>
 #include <QFileDialog>
 
+#include <memory>
 namespace br {
 namespace uerj {
 namespace eng {
@@ -56,16 +57,16 @@ EFotoManager::EFotoManager() : updater("")
 {
 	xmlData = "";
 	savedState = true;
-	project = NULL;
-	interiorOrientation = NULL;
-	spatialRessection = NULL;
-	fotoTri = NULL;
-	dem = NULL;
-	ortho = NULL;
-	sp = NULL;
-	theTerrain = NULL;
+    project = nullptr;
+    interiorOrientation = nullptr;
+    spatialRessection = nullptr;
+    fotoTri = nullptr;
+    dem = nullptr;
+    ortho = nullptr;
+    sp = nullptr;
+    theTerrain = nullptr;
 	nextModule = NEXT_PROJECT;
-	report = NULL;
+    report = nullptr;
 }
 
 /**
@@ -674,29 +675,29 @@ bool EFotoManager::execProject(std::string filename)
 bool EFotoManager::reloadProject()
 {
 	nextModule = NEXT_NONE;
-		if (project != NULL)
+        if (project != nullptr)
 	{
-		if (fotoTri !=NULL)
+        if (fotoTri !=nullptr)
 		{
 			stopPT();
 		}
-		if (interiorOrientation != NULL)
+        if (interiorOrientation != nullptr)
 		{
 			stopIO(interiorOrientation->getId());
 		}
-		if (spatialRessection != NULL)
+        if (spatialRessection != nullptr)
 		{
 			stopSR(spatialRessection->getId());
 		}
-		if (dem != NULL)
+        if (dem != nullptr)
 		{
 			stopDEM();
 		}
-		if (ortho != NULL)
+        if (ortho != nullptr)
 		{
 			stopOrtho();
 				}
-				if (sp != NULL)
+                if (sp != nullptr)
 				{
 					stopSP();
 				}
@@ -716,13 +717,13 @@ bool EFotoManager::execIO(int id)
 	bool result;
 	nextModule = NEXT_RELOAD;
 	Image* ioImage = instanceImage(id);
-	if (ioImage == NULL)
+    if (ioImage == nullptr)
 	{
 		return false;
 	}
 	Sensor* ioSensor = instanceSensor(ioImage->getSensorId());
 	InteriorOrientation* io = instanceIO(id);
-	if (io == NULL)
+    if (io == nullptr)
 	{
 		io = new InteriorOrientation(id);
 		IOs.push_back(io);
@@ -738,7 +739,7 @@ void EFotoManager::stopIO(int id)
 {
 	Image* ioImage = instanceImage(id);
 	delete interiorOrientation;
-	interiorOrientation = NULL;
+    interiorOrientation = nullptr;
 	deleteIO(id);
 	deleteSensor(ioImage->getSensorId());
 	deleteImage(id);
@@ -753,12 +754,12 @@ bool EFotoManager::execSR(int id)
 	nextModule = NEXT_RELOAD;
 	Image* srImage = instanceImage(id);
 	SpatialRessection* sr = (SpatialRessection*) instanceEO(id);
-	if (sr == NULL)
+    if (sr == nullptr)
 	{
 		sr = new SpatialRessection(id);
 		EOs.push_back(sr);
 	}
-	if (srImage == NULL)
+    if (srImage == nullptr)
 	{
 		return false;
 	}
@@ -772,7 +773,7 @@ bool EFotoManager::execSR(int id)
 	srFlight->setTerrain(srTerrain);
 
 	instanceAllPoints();
-	spatialRessection = new SRManager(this, srTerrain, srSensor, srFlight, srImage, srIO, sr, points);
+    spatialRessection = new SRManager(this, srTerrain, srSensor, srFlight, srImage, srIO, sr, points);
 	result = spatialRessection->exec();
 
 	return result;
@@ -781,8 +782,8 @@ bool EFotoManager::execSR(int id)
 void EFotoManager::stopSR(int id)
 {
 	Image* srImage = instanceImage(id);
-	delete spatialRessection;
-	spatialRessection = NULL;
+    delete spatialRessection;
+    spatialRessection = nullptr;
 	deleteEO(id);
 	deleteIO(id);
 	deleteFlight(srImage->getFlightId());
@@ -819,7 +820,7 @@ bool EFotoManager::execSP()
 		img->setIO(imgIO);
 		img->setEO(imgEO);
 
-		if (imgIO == NULL || imgEO == NULL)
+        if (imgIO == nullptr || imgEO == nullptr)
 		{
 			deleteImage(img->getId());
 		}

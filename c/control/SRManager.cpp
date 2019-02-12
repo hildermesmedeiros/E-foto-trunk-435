@@ -40,13 +40,13 @@ namespace efoto {
 
 SRManager::SRManager()
 {
-    manager = NULL;
-    mySensor = NULL;
-    myFlight = NULL;
-    myImage = NULL;
-    myIO = NULL;
-    mySR = NULL;
-    myTerrain = NULL;
+    manager = nullptr;
+    mySensor = nullptr;
+    myFlight = nullptr;
+    myImage = nullptr;
+    myIO = nullptr;
+    mySR = nullptr;
+    myTerrain = nullptr;
     started = false;
     status = false;
 }
@@ -91,7 +91,7 @@ bool SRManager::measurePoint(int id, double col, double lin)
     if (started)
     {
         Point* pointToMeasure = myImage->getPoint(id);
-        if (pointToMeasure == NULL)
+        if (pointToMeasure == nullptr)
         {
             pointToMeasure = manager->point(id);
             myImage->putPoint(pointToMeasure);
@@ -133,7 +133,7 @@ bool SRManager::removePoint(int id)
     if (started)
     {
         Point* pointToRemove = myImage->getPoint(id);
-        if (pointToRemove != NULL)
+        if (pointToRemove != nullptr)
         {
             mySR->unselectPoint(id);
         }
@@ -148,7 +148,7 @@ bool SRManager::insertPointOnImage(int id)
     if (started)
     {
         Point* pointToInsert = manager->instancePoint(id);
-        if (pointToInsert != NULL)
+        if (pointToInsert != nullptr)
         {
             myImage->putPoint(pointToInsert);
         }
@@ -399,7 +399,7 @@ bool SRManager::exec()
 
 int SRManager::getId()
 {
-    if (myImage != NULL)
+    if (myImage != nullptr)
     {
         return myImage->getId();
     }

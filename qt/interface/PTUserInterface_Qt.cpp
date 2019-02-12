@@ -27,7 +27,7 @@
 #include "FlightDirectionForm.h"
 
 #include <qapplication.h>
-#include <QtGui>
+#include <QtWidgets>
 #include <QMessageBox>
 #include <QCheckBox>
 
@@ -40,16 +40,16 @@ namespace uerj {
 namespace eng {
 namespace efoto {
 
-PTUserInterface_Qt* PTUserInterface_Qt::ptInst = NULL;
+PTUserInterface_Qt* PTUserInterface_Qt::ptInst = nullptr;
 
 PTUserInterface_Qt* PTUserInterface_Qt::instance(PTManager *ptManager)
 {
-    if (ptInst != NULL)
+    if (ptInst != nullptr)
     {
         delete ptInst;
-        ptInst = NULL;
+        ptInst = nullptr;
     }
-    if (ptInst == NULL)
+    if (ptInst == nullptr)
     {
         ptInst = new PTUserInterface_Qt(ptManager);
     }
@@ -333,7 +333,7 @@ bool PTUserInterface_Qt::exec()
     markAllpoints(viewer->getLeftDisplay());
     markAllpoints(viewer->getRightDisplay());
 
-    if (pointsTableWidget->item(0,5) != 0)
+    if (pointsTableWidget->item(0,5) != nullptr)
         setCurrentPointKey(pointsTableWidget->item(0,5)->text().toInt(&ok));
     this->show();
     LoadingScreen::instance().close();

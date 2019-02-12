@@ -27,7 +27,7 @@
 #include <qpixmap.h>
 #include <qaction.h>
 #include <qstring.h>
-#include <QtGui>
+#include <QtWidgets>
 
 namespace br {
 namespace uerj {
@@ -337,7 +337,7 @@ void ReportUserInterface_Qt::unselectFatherByKid(QTreeWidgetItem* kid)
 {
     QTreeWidgetItem* father = kid->parent();
 
-    if (father==NULL)
+    if (father==nullptr)
         return;
 
     int numChild = father->childCount();

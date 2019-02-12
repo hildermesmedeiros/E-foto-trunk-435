@@ -47,7 +47,7 @@ class IOManager
 	//
 	bool started;
 	bool status;
-	EFotoManager* manager;
+    EFotoManager* manager;
 	Sensor* mySensor;
 	Image* myImage;
 	InteriorOrientation* myIO;
