@@ -5,12 +5,16 @@
 TEMPLATE = app
 TARGET = e-foto
 
+QT += widgets
 
-QT += core widgets
+Model =  c/photogrammetry c/infrastructure c/xml_definitions c/imageProcessing c/shapelib
 
+View = c/interface qt/interface qt/imageDisplay qt/infrastructure qt/formDisplay
 
+Controler = c/control
+OTHER_FILES += \
+               build-common.pri
 include(build-common.pri)
-
 
 INCLUDEPATH += . \
                            c/control \
@@ -290,3 +294,4 @@ SOURCES += c/control/DEMManager.cpp \
 		   qt/interface/SRUserInterface_Qt.cpp
 
 RESOURCES += qt/resource/resource.qrc
+
